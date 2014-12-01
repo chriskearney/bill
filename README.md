@@ -4,7 +4,7 @@ Bill will fetch and display graphite graphs in a window.  If you want, Bill will
 
 **usage**
 
-java -jar bill.jar -g <graphite_graph_url> -w 800 -h 600 -r 30
+java -jar bill.jar -g http://graphite_graph_url -w 800 -h 600 -r 30
 
 
 
