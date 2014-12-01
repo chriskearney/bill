@@ -31,7 +31,6 @@ public class GraphDisplayFrame extends JFrame {
         }
         setSize(new Dimension(width, height + 20));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        System.out.println(graphDisplayPanel.getSize());
     }
 
     public void updateImagePanel(InputStream is) throws IOException {

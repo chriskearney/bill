@@ -73,7 +73,6 @@ public class BillGraph {
             host = billCommand.getGraphiteHost();
         }
         String url = prot + "://" + host + "/render/?" + URLEncodedUtils.format(graphUrlPairs, "UTF-8");
-        System.out.println(url);
         return url;
     }
 
