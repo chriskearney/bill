@@ -25,7 +25,6 @@ public class GraphDisplayFrame extends JFrame {
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
                 Component c = (Component) evt.getSource();
-                System.out.println(c.getSize().getWidth());
             }
         });
 

@@ -8,10 +8,10 @@ import java.util.Map;
 public class BillCommand {
 
     @Parameter(names = { "-width", "-w" }, description = "Graph display width.")
-    private int width = BillMain.DEFAULT_WIDTH;
+    private int width = Bill.DEFAULT_WIDTH;
 
     @Parameter(names = { "-height", "-h" }, description = "Graph display height.")
-    private int height = BillMain.DEFAULT_HEIGHT;
+    private int height = Bill.DEFAULT_HEIGHT;
 
     @Parameter(names = { "-timezone", "-tz" }, description = "Graph display timezone.")
     private String timezone = null;
