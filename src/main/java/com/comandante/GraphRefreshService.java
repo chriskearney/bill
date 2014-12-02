@@ -24,8 +24,11 @@ public class GraphRefreshService extends AbstractScheduledService {
     protected void runOneIteration() throws Exception {
         InputStream is = billHttpClient.getBillGraph(this.billGraph);
         if (graphDisplayFrame == null) {
+            System.out.println("Creating First time Graph.");
             graphDisplayFrame = new GraphDisplayFrame(is, billGraph);
+            return;
         }
+        System.out.println("Updating image");
         graphDisplayFrame.updateImagePanel(is);
     }
 

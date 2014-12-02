@@ -18,7 +18,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.comandante.BillMain</mainClass>
+                  <mainClass>com.comandante.Bill</mainClass>
                 </transformer>
               </transformers>
             </configuration>
