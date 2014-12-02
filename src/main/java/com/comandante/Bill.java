@@ -5,7 +5,7 @@ import com.beust.jcommander.JCommander;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class BillMain {
+public class Bill {
 
     public static final int DEFAULT_WIDTH = 800;
     public static final int DEFAULT_HEIGHT = 600;
