@@ -1,14 +1,17 @@
 package com.comandante;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.internal.Maps;
+
+import java.util.Map;
 
 public class BillCommand {
 
     @Parameter(names = { "-width", "-w" }, description = "Graph display width.")
-    private int width;
+    private int width = BillMain.DEFAULT_WIDTH;
 
     @Parameter(names = { "-height", "-h" }, description = "Graph display height.")
-    private int height;
+    private int height = BillMain.DEFAULT_HEIGHT;
 
     @Parameter(names = { "-timezone", "-tz" }, description = "Graph display timezone.")
     private String timezone = null;
@@ -17,13 +20,23 @@ public class BillCommand {
     private boolean debug = false;
 
     @Parameter(names = { "-reload", "-r" }, description = "Reload interval.")
-    private int reloadInterval = 0;
+    private int reloadInterval = Integer.MAX_VALUE;
 
     @Parameter(names = { "-graph", "-g" }, description = "Graphite graph details.")
     private String graphUrl;
 
-    @Parameter(names = "-graphiteHost", description =  "Hostname of graphiteserver")
-    private String graphiteHost;
+    @Parameter(names = { "-title", "-t" }, description = "Graphite graph details.")
+    private String title;
+
+    public Map<String, String> getInjectPairs() {
+        Map<String, String> stringStringMap = Maps.newHashMap();
+        stringStringMap.put("width", Integer.toString(width));
+        stringStringMap.put("height", Integer.toString(height));
+        if (timezone != null) {
+            stringStringMap.put("tz", timezone);
+        }
+        return stringStringMap;
+    }
 
     public String getGraphUrl() {
         return graphUrl;
@@ -57,7 +70,7 @@ public class BillCommand {
         return reloadInterval;
     }
 
-    public String getGraphiteHost() {
-        return graphiteHost;
+    public String getTitle() {
+        return title;
     }
 }

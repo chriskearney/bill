@@ -9,14 +9,13 @@ import java.util.concurrent.TimeUnit;
 
 public class GraphRefreshService extends AbstractScheduledService {
 
-    private final GraphDisplayFrame graphDisplayFrame;
     private final BillHttpClient billHttpClient;
     private final BillGraph billGraph;
     private final int reload;
+    private GraphDisplayFrame graphDisplayFrame;
 
-    public GraphRefreshService(GraphDisplayFrame graphDisplayFrame, BillHttpClient billHttpClient, BillGraph billGraph, int reload) {
-        this.graphDisplayFrame = graphDisplayFrame;
-        this.billHttpClient = billHttpClient;
+    public GraphRefreshService(BillGraph billGraph, int reload) {
+        this.billHttpClient = new BillHttpClient();
         this.billGraph = billGraph;
         this.reload = reload;
     }
@@ -24,11 +23,14 @@ public class GraphRefreshService extends AbstractScheduledService {
     @Override
     protected void runOneIteration() throws Exception {
         InputStream is = billHttpClient.getBillGraph(this.billGraph);
+        if (graphDisplayFrame == null) {
+            graphDisplayFrame = new GraphDisplayFrame(is, billGraph);
+        }
         graphDisplayFrame.updateImagePanel(is);
     }
 
     @Override
     protected Scheduler scheduler() {
-        return Scheduler.newFixedDelaySchedule(reload, reload, TimeUnit.SECONDS);
+        return Scheduler.newFixedDelaySchedule(0, reload, TimeUnit.SECONDS);
     }
 }
