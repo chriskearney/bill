@@ -45,7 +45,7 @@ public class BillGraphManager {
         refresherMap.put(billGraph.getId(), billGraphRefresher);
     }
 
-    public void generateAllGraphs() {
+    public void generateAllGraphsFromDisk() {
         for (Map.Entry<String, BillHttpGraph> next : billHttpGraphs.entrySet()) {
             if (next.getValue() != null) {
                 startGraph(BillGraph.createBillGraph(next.getValue(), Optional.of(next.getKey())), next.getValue().getRefreshRate());

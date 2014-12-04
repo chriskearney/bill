@@ -37,7 +37,7 @@ public class Bill {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         DB db = DBMaker.newFileDB(getOrCreateUserDataFile()).closeOnJvmShutdown().make();
         BillGraphManager billGraphManager = new BillGraphManager(db);
-        billGraphManager.generateAllGraphs();
+        billGraphManager.generateAllGraphsFromDisk();
         if (billCommand.getGraphUrl() != null) {
             BillHttpClient billHttpClient = new BillHttpClient();
             if (isServerRunning(billHttpClient)) {
