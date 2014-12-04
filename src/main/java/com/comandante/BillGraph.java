@@ -2,6 +2,7 @@ package com.comandante;
 
 import com.beust.jcommander.internal.Maps;
 import com.comandante.http.server.resource.BillHttpGraph;
+import com.google.common.base.Optional;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
@@ -39,7 +40,7 @@ public class BillGraph {
         this.id = id;
     }
 
-    public static BillGraph createBillGraph(BillHttpGraph billHttpGraph) {
+    public static BillGraph createBillGraph(BillHttpGraph billHttpGraph, Optional<String> id) {
         Map<String, String> injectPairs = Maps.newHashMap();
         injectPairs.put("width", Integer.toString(billHttpGraph.getWidth()));
         injectPairs.put("height", Integer.toString(billHttpGraph.getHeight()));
@@ -47,13 +48,19 @@ public class BillGraph {
             injectPairs.put("tz", billHttpGraph.getTimezone());
         }
         return createBillGraph(billHttpGraph.getGraphUrl(), injectPairs,
-                billHttpGraph.getWidth(), billHttpGraph.getHeight(), billHttpGraph.getTitle());
+                billHttpGraph.getWidth(), billHttpGraph.getHeight(), billHttpGraph.getTitle(), id);
     }
 
-    public static BillGraph createBillGraph(String graphUrl, Map<String, String> injectPairs, int width, int height, String title) {
+    private static BillGraph createBillGraph(String graphUrl, Map<String, String> injectPairs, int width, int height, String title, Optional<String> id) {
+        String newId;
+        if (!id.isPresent()) {
+            newId = UUID.randomUUID().toString();
+        } else {
+            newId = id.get();
+        }
         BillGraph billGraph = null;
         try {
-            billGraph = new BillGraph(UUID.randomUUID().toString(), graphUrl, width, height + 20, title);
+            billGraph = new BillGraph(newId, graphUrl, width, height + 20, title);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
