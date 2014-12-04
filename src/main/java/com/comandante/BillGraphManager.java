@@ -37,17 +37,9 @@ public class BillGraphManager {
     }
 
     public void removeGraph(String id) {
-        System.out.println("Removing graph with id: " + id);
         refresherMap.get(id).stopAsync();
         refresherMap.remove(id);
         billHttpGraphs.remove(id);
-        for (Map.Entry<String, BillHttpGraph> httpGraph : billHttpGraphs.entrySet()) {
-            System.out.println(httpGraph.getKey());
-        }
-        System.out.println(billHttpGraphs.size());
-        for (Map.Entry<String, BillHttpGraph> httpGraph : billHttpGraphs.entrySet()) {
-            System.out.println(httpGraph.getKey());
-        }
         db.commit();
     }
 
