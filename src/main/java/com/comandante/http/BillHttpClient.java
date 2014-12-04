@@ -26,7 +26,6 @@ public class BillHttpClient {
     private InputStream getGraphData(String url) throws IOException {
         HttpRequest httpRequest = requestFactory.buildGetRequest(new GenericUrl(new URL(url)));
         HttpResponse execute = httpRequest.execute();
-        System.out.println(execute.getStatusCode());
         return execute.getContent();
     }
 }
