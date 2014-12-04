@@ -28,7 +28,7 @@ public class BillGraph {
     private int height;
     private final String id;
 
-    private BillGraph(String graphUrl, int width, int height, String title) throws URISyntaxException, MalformedURLException {
+    private BillGraph(String id, String graphUrl, int width, int height, String title) throws URISyntaxException, MalformedURLException {
         this.graphUrlPairs = parse(new URI(graphUrl), "UTF-8");
         this.url = new URL(graphUrl);
         this.protocol = url.getProtocol();
@@ -36,7 +36,7 @@ public class BillGraph {
         this.title = title;
         this.width = width;
         this.height = height;
-        this.id = UUID.randomUUID().toString();
+        this.id = id;
     }
 
     public static BillGraph createBillGraph(BillHttpGraph billHttpGraph) {
@@ -53,7 +53,7 @@ public class BillGraph {
     public static BillGraph createBillGraph(String graphUrl, Map<String, String> injectPairs, int width, int height, String title) {
         BillGraph billGraph = null;
         try {
-            billGraph = new BillGraph(graphUrl, width, height + 20, title);
+            billGraph = new BillGraph(UUID.randomUUID().toString(), graphUrl, width, height + 20, title);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
