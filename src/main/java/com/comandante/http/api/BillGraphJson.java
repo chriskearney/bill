@@ -1,21 +1,28 @@
 package com.comandante.http.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class BillGraphJson {
 
     @NotNull
+    @JsonProperty
     private String graphUrl;
 
+    @JsonProperty
     private int width;
 
+    @JsonProperty
     private int height;
 
     @Size(min = 30)
+    @JsonProperty
     private int refreshRate;
 
     @NotNull
+    @JsonProperty
     private String timezone;
 
     public String getGraphUrl() {

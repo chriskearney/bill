@@ -2,6 +2,7 @@ package com.comandante.http.api;
 
 import com.beust.jcommander.internal.Maps;
 import com.comandante.BillGraph;
+import com.comandante.GraphManager;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -15,6 +16,15 @@ import java.util.Map;
 @Path("/bill")
 @Produces(MediaType.APPLICATION_JSON)
 public class GraphResource {
+    private final String template;
+    private final String defaultName;
+    private final GraphManager graphManager;
+
+    public GraphResource(String template, String defaultName, GraphManager graphManager) {
+        this.template = template;
+        this.defaultName = defaultName;
+        this.graphManager = graphManager;
+    }
 
     @POST
     @Path("/create")
@@ -30,7 +40,7 @@ public class GraphResource {
         BillGraph billGraph = BillGraph.createBillGraph(billGraphJson.getGraphUrl(), injectPairs,
                 billGraphJson.getWidth(), billGraphJson.getHeight(), graphName);
 
-        System.out.println(billGraph);
+        graphManager.addGraph(billGraph, billGraphJson.getRefreshRate());
         return Response.status(200).build();
     }
 
