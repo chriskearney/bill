@@ -13,8 +13,10 @@ public class BillGraphRefresher extends AbstractScheduledService {
     private final BillGraph billGraph;
     private final int reload;
     private BillGraphDisplayFrame billGraphDisplayFrame;
+    private final BillGraphManager billGraphManager;
 
-    public BillGraphRefresher(BillGraph billGraph, int reload) {
+    public BillGraphRefresher(BillGraphManager billGraphManager, BillGraph billGraph, int reload) {
+        this.billGraphManager = billGraphManager;
         this.billHttpClient = new BillHttpClient();
         this.billGraph = billGraph;
         this.reload = reload;
@@ -26,7 +28,7 @@ public class BillGraphRefresher extends AbstractScheduledService {
         try {
             is = billHttpClient.getBillGraph(this.billGraph);
             if (billGraphDisplayFrame == null) {
-                billGraphDisplayFrame = new BillGraphDisplayFrame(is, billGraph);
+                billGraphDisplayFrame = new BillGraphDisplayFrame(is, billGraph, billGraphManager);
                 return;
             }
         } catch (Exception e) {
