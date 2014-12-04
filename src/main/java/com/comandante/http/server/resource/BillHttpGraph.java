@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
-public class BillHttpGraph {
+public class BillHttpGraph implements Serializable {
 
-    @NotNull
     @JsonProperty
     private String graphUrl;
 
@@ -75,4 +75,45 @@ public class BillHttpGraph {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BillHttpGraph that = (BillHttpGraph) o;
+
+        if (height != that.height) return false;
+        if (refreshRate != that.refreshRate) return false;
+        if (width != that.width) return false;
+        if (!graphUrl.equals(that.graphUrl)) return false;
+        if (!timezone.equals(that.timezone)) return false;
+        if (!title.equals(that.title)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = graphUrl.hashCode();
+        result = 31 * result + width;
+        result = 31 * result + height;
+        result = 31 * result + refreshRate;
+        result = 31 * result + timezone.hashCode();
+        result = 31 * result + title.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "BillHttpGraph{" +
+                "graphUrl='" + graphUrl + '\'' +
+                ", width=" + width +
+                ", height=" + height +
+                ", refreshRate=" + refreshRate +
+                ", timezone='" + timezone + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
+
 }

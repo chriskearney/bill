@@ -22,12 +22,19 @@ public class BillGraphRefresher extends AbstractScheduledService {
 
     @Override
     protected void runOneIteration() throws Exception {
-        InputStream is = billHttpClient.getBillGraph(this.billGraph);
-        if (billGraphDisplayFrame == null) {
-            billGraphDisplayFrame = new BillGraphDisplayFrame(is, billGraph);
-            return;
+        InputStream is = null;
+        try {
+            is = billHttpClient.getBillGraph(this.billGraph);
+            if (billGraphDisplayFrame == null) {
+                billGraphDisplayFrame = new BillGraphDisplayFrame(is, billGraph);
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        billGraphDisplayFrame.updateImagePanel(is);
+        if (is != null) {
+            billGraphDisplayFrame.updateImagePanel(is);
+        }
     }
 
     @Override

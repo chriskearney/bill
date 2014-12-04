@@ -7,36 +7,50 @@ import com.comandante.http.server.BillHttpServerApplication;
 import com.comandante.http.server.BillHttpServerConfiguration;
 import com.comandante.http.server.resource.BillHttpGraph;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Files;
 import io.dropwizard.cli.ServerCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
+
 
 public class Bill {
 
+    public static final String BILL_DB_VERSION = "1.0";
+    public static final String BILL_DB_FILENAME = "bill-settings.mapdb";
     public static final int DEFAULT_WIDTH = 800;
     public static final int DEFAULT_HEIGHT = 600;
     public static final int DEFAULT_HTTP_PORT = 32224;
     public static final int DEFAULT_HTTP_PORT_ADMIN = 32225;
+    public static final String CREATE_URL = "http://localhost:" + DEFAULT_HTTP_PORT + "/bill/create";
+    public static final String HEALTHCHECK_URL = "http://localhost:" + DEFAULT_HTTP_PORT_ADMIN + "/healthcheck";
 
     public static void main(String[] args) throws Exception {
         BillCommand billCommand = new BillCommand();
         new JCommander(billCommand, args);
-        BillHttpClient billHttpClient = new BillHttpClient();
-        if (isServerRunning(billHttpClient)) {
-            // If we land here, it means Bill is already running.
-            // Sending the graph to bill using http+json and exiting.
-            sendGraphToBill(billCommand, billHttpClient);
-            System.exit(0);
-        }
-        // Some UI Niceness on OS X
+        // PreLoad Configuration
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        BillGraph billGraph = BillGraph.createBillGraph(billCommand);
-        BillGraphManager billGraphManager = new BillGraphManager();
-        billGraphManager.addGraph(billGraph, billCommand.getReloadInterval());
+        DB db = DBMaker.newFileDB(getOrCreateUserDataFile()).closeOnJvmShutdown().make();
+        // Open up the graph (if there is one)
+        BillGraphManager billGraphManager = new BillGraphManager(db);
+        billGraphManager.generateAllGraphs();
+        if (billCommand.getGraphUrl() != null) {
+            BillHttpClient billHttpClient = new BillHttpClient();
+            if (isServerRunning(billHttpClient)) {
+                // If we land here, it means Bill is already running.
+                // Sending the graph to bill using http+json and exiting.
+                sendGraphToBill(billCommand, billHttpClient);
+                System.exit(0);
+            } else {
+                billGraphManager.addGraph(createBillHttpGraph(billCommand));
+            }
+        }
         BillHttpServerApplication billHttpServerApplication = new BillHttpServerApplication(billGraphManager);
         Bootstrap bootstrap = new Bootstrap(billHttpServerApplication);
         ServerCommand<BillHttpServerConfiguration> serverConfigurationServerCommand = new ServerCommand<BillHttpServerConfiguration>(billHttpServerApplication);
@@ -45,24 +59,44 @@ public class Bill {
 
     private static boolean isServerRunning(BillHttpClient billHttpClient) {
         try {
-            return billHttpClient.billServerHealthCheck("http://localhost:" + DEFAULT_HTTP_PORT_ADMIN + "/healthcheck");
+            return billHttpClient.billServerHealthCheck(HEALTHCHECK_URL);
         } catch (IOException e) {
             return false;
         }
     }
 
     private static void sendGraphToBill(BillCommand billCommand, BillHttpClient billHttpClient) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        BillHttpGraph billHttpGraph = createBillHttpGraph(billCommand);
+        billHttpClient.createGraph(CREATE_URL, new ObjectMapper().writeValueAsString(billHttpGraph));
+    }
+
+    private static BillHttpGraph createBillHttpGraph(BillCommand billCommand) {
         BillHttpGraph billHttpGraph = new BillHttpGraph();
+        billHttpGraph.setGraphUrl(billCommand.getGraphUrl());
+        billHttpGraph.setRefreshRate(billCommand.getReloadInterval());
+        billHttpGraph.setTimezone(billCommand.getTimezone());
         billHttpGraph.setHeight(billCommand.getHeight());
         billHttpGraph.setWidth(billCommand.getWidth());
         billHttpGraph.setTitle(billCommand.getTitle());
-        billHttpGraph.setRefreshRate(billCommand.getReloadInterval());
-        billHttpGraph.setGraphUrl(billCommand.getGraphUrl());
         if (billCommand.getTimezone() != null) {
             billHttpGraph.setTimezone(billCommand.getTimezone());
         }
-        String s = mapper.writeValueAsString(billHttpGraph);
-        billHttpClient.createGraph("http://localhost:" + DEFAULT_HTTP_PORT + "/bill/create", s);
+        return billHttpGraph;
+    }
+
+    public static File getOrCreateUserDataFile() throws IOException {
+        File userDataFile = new File(getUserDataFile());
+        if (!userDataFile.exists()) {
+            Files.createParentDirs(userDataFile);
+        }
+        return userDataFile;
+    }
+
+    public static String getUserDataDirectory() {
+        return System.getProperty("user.home") + File.separator + ".bill" + File.separator + BILL_DB_VERSION + File.separator;
+    }
+
+    public static String getUserDataFile() {
+        return getUserDataDirectory() + BILL_DB_FILENAME;
     }
 }

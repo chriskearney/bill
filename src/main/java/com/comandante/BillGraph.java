@@ -1,5 +1,7 @@
 package com.comandante;
 
+import com.beust.jcommander.internal.Maps;
+import com.comandante.http.server.resource.BillHttpGraph;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
@@ -11,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.apache.http.client.utils.URLEncodedUtils.parse;
 
@@ -23,6 +26,7 @@ public class BillGraph {
     private String title;
     private int width;
     private int height;
+    private final String id;
 
     private BillGraph(String graphUrl, int width, int height, String title) throws URISyntaxException, MalformedURLException {
         this.graphUrlPairs = parse(new URI(graphUrl), "UTF-8");
@@ -32,16 +36,24 @@ public class BillGraph {
         this.title = title;
         this.width = width;
         this.height = height;
+        this.id = UUID.randomUUID().toString();
     }
 
-    public static BillGraph createBillGraph(BillCommand billCommand) {
-        return createBillGraph(billCommand.getGraphUrl(), billCommand.getInjectPairs(), billCommand.getWidth(), billCommand.getHeight(), billCommand.getTitle());
+    public static BillGraph createBillGraph(BillHttpGraph billHttpGraph) {
+        Map<String, String> injectPairs = Maps.newHashMap();
+        injectPairs.put("width", Integer.toString(billHttpGraph.getWidth()));
+        injectPairs.put("height", Integer.toString(billHttpGraph.getHeight()));
+        if (billHttpGraph.getTimezone() != null) {
+            injectPairs.put("tz", billHttpGraph.getTimezone());
+        }
+        return createBillGraph(billHttpGraph.getGraphUrl(), injectPairs,
+                billHttpGraph.getWidth(), billHttpGraph.getHeight(), billHttpGraph.getTitle());
     }
 
     public static BillGraph createBillGraph(String graphUrl, Map<String, String> injectPairs, int width, int height, String title) {
         BillGraph billGraph = null;
         try {
-            billGraph = new BillGraph(graphUrl, width, height  + 20, title);
+            billGraph = new BillGraph(graphUrl, width, height + 20, title);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
@@ -56,7 +68,7 @@ public class BillGraph {
     }
 
     private boolean doesKeyExistInPairs(String k) {
-        for (NameValuePair nvp: graphUrlPairs) {
+        for (NameValuePair nvp : graphUrlPairs) {
             if (nvp.getName().equals(k)) {
                 return true;
             }
@@ -110,7 +122,7 @@ public class BillGraph {
     }
 
     public NameValuePair getPair(String k) {
-        for (NameValuePair pair: graphUrlPairs) {
+        for (NameValuePair pair : graphUrlPairs) {
             if (pair.getName().equals(k)) {
                 return pair;
             }
@@ -140,5 +152,9 @@ public class BillGraph {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public String getId() {
+        return id;
     }
 }
