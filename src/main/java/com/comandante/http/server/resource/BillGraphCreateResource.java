@@ -26,7 +26,7 @@ public class BillGraphCreateResource {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createGraph(BillHttpGraph billHttpGraph) {
-        billGraphManager.addGraph(billHttpGraph);
+        billGraphManager.addNewGraph(billHttpGraph);
         return Response.status(200).build();
     }
 }

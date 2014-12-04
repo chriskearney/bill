@@ -44,7 +44,7 @@ public class Bill {
                 sendGraphToBill(billCommand, billHttpClient);
                 System.exit(0);
             } else {
-                billGraphManager.addGraph(createBillHttpGraph(billCommand));
+                billGraphManager.addNewGraph(createBillHttpGraph(billCommand));
             }
         }
         BillHttpServerApplication billHttpServerApplication = new BillHttpServerApplication(billGraphManager);

@@ -1,6 +1,7 @@
 package com.comandante;
 
 import com.comandante.http.server.resource.BillHttpGraph;
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -24,8 +25,8 @@ public class BillGraphManager {
         this.refresherMap = Maps.newConcurrentMap();
     }
 
-    public void addGraph(BillHttpGraph billHttpGraph) {
-        BillGraph billGraph = BillGraph.createBillGraph(billHttpGraph);
+    public void addNewGraph(BillHttpGraph billHttpGraph) {
+        BillGraph billGraph = BillGraph.createBillGraph(billHttpGraph, Optional.<String>absent());
         startGraph(billGraph, billHttpGraph.getRefreshRate());
         billHttpGraphs.put(billGraph.getId(), billHttpGraph);
         db.commit();
@@ -47,7 +48,7 @@ public class BillGraphManager {
     public void generateAllGraphs() {
         for (Map.Entry<String, BillHttpGraph> next : billHttpGraphs.entrySet()) {
             if (next.getValue() != null) {
-                addGraph(next.getValue());
+                startGraph(BillGraph.createBillGraph(next.getValue(), Optional.of(next.getKey())), next.getValue().getRefreshRate());
             }
         }
     }
