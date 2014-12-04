@@ -24,25 +24,16 @@ public class Bill {
     public static void main(String[] args) throws Exception {
         BillCommand billCommand = new BillCommand();
         new JCommander(billCommand, args);
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Billaaaaa" + billCommand.getTitle());
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         BillHttpClient billHttpClient = new BillHttpClient();
         if (isServerRunning(billHttpClient)) {
-            ObjectMapper mapper = new ObjectMapper();
-            BillHttpGraph billHttpGraph = new BillHttpGraph();
-            billHttpGraph.setHeight(billCommand.getHeight());
-            billHttpGraph.setWidth(billCommand.getWidth());
-            billHttpGraph.setTitle(billCommand.getTitle());
-            billHttpGraph.setRefreshRate(billCommand.getReloadInterval());
-            billHttpGraph.setGraphUrl(billCommand.getGraphUrl());
-            if (billCommand.getTimezone() != null) {
-                billHttpGraph.setTimezone(billCommand.getTimezone());
-            }
-            String s = mapper.writeValueAsString(billHttpGraph);
-            billHttpClient.createGraph("http://localhost:" + DEFAULT_HTTP_PORT + "/bill/create", s);
+            // If we land here, it means Bill is already running.
+            // Sending the graph to bill using http+json and exiting.
+            sendGraphToBill(billCommand, billHttpClient);
             System.exit(0);
         }
+        // Some UI Niceness on OS X
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         BillGraph billGraph = BillGraph.createBillGraph(billCommand);
         BillGraphManager billGraphManager = new BillGraphManager();
         billGraphManager.addGraph(billGraph, billCommand.getReloadInterval());
@@ -52,11 +43,26 @@ public class Bill {
         serverConfigurationServerCommand.run(bootstrap, new Namespace(Maps.<String, Object>newHashMap()));
     }
 
-    private static boolean isServerRunning(BillHttpClient billHttpClient)  {
+    private static boolean isServerRunning(BillHttpClient billHttpClient) {
         try {
             return billHttpClient.billServerHealthCheck("http://localhost:" + DEFAULT_HTTP_PORT_ADMIN + "/healthcheck");
         } catch (IOException e) {
             return false;
         }
+    }
+
+    private static void sendGraphToBill(BillCommand billCommand, BillHttpClient billHttpClient) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        BillHttpGraph billHttpGraph = new BillHttpGraph();
+        billHttpGraph.setHeight(billCommand.getHeight());
+        billHttpGraph.setWidth(billCommand.getWidth());
+        billHttpGraph.setTitle(billCommand.getTitle());
+        billHttpGraph.setRefreshRate(billCommand.getReloadInterval());
+        billHttpGraph.setGraphUrl(billCommand.getGraphUrl());
+        if (billCommand.getTimezone() != null) {
+            billHttpGraph.setTimezone(billCommand.getTimezone());
+        }
+        String s = mapper.writeValueAsString(billHttpGraph);
+        billHttpClient.createGraph("http://localhost:" + DEFAULT_HTTP_PORT + "/bill/create", s);
     }
 }
