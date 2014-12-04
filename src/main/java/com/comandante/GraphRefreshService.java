@@ -36,4 +36,8 @@ public class GraphRefreshService extends AbstractScheduledService {
     protected Scheduler scheduler() {
         return Scheduler.newFixedDelaySchedule(0, reload, TimeUnit.SECONDS);
     }
+
+    public BillGraph getBillGraph() {
+        return billGraph;
+    }
 }

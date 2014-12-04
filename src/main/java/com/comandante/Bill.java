@@ -18,7 +18,7 @@ public class Bill {
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Bill -" + billCommand.getTitle());
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         BillGraph billGraph = BillGraph.createBillGraph(billCommand);
-        GraphRefreshService graphRefreshService = new GraphRefreshService(billGraph, billCommand.getReloadInterval());
-        graphRefreshService.startAsync();
+        GraphManager graphManager = new GraphManager();
+        graphManager.addGraph(billGraph, billCommand.getReloadInterval());
     }
 }
