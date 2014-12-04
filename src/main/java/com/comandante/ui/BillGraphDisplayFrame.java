@@ -5,8 +5,6 @@ import com.comandante.BillGraph;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,12 +19,6 @@ public class BillGraphDisplayFrame extends JFrame {
         setVisible(true);
         setSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
         setTitle(billGraph.getTitle());
-       // setDefaultCloseOperation();
-        addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent evt) {
-                Component c = (Component) evt.getSource();
-            }
-        });
     }
 
     public void updateImagePanel(InputStream is) throws IOException {
