@@ -1,15 +1,23 @@
-package com.comandante.http.api;
+package com.comandante.http.server;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
+import io.dropwizard.jetty.HttpConnectorFactory;
+import io.dropwizard.server.DefaultServerFactory;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class BillHttpServerConfiguration extends Configuration {
-    @NotEmpty
-    private String template = "Hello, %s!";
+
+    public BillHttpServerConfiguration() {
+        ((HttpConnectorFactory) ((DefaultServerFactory) getServerFactory()).getApplicationConnectors().get(0)).setPort(32224);
+        ((HttpConnectorFactory) ((DefaultServerFactory) getServerFactory()).getAdminConnectors().get(0)).setPort(32225);
+    }
 
     @NotEmpty
-    private String defaultName = "Stranger";
+    private String template = "bill";
+
+    @NotEmpty
+    private String defaultName = "bill";
 
     @JsonProperty
     public String getTemplate() {
@@ -30,4 +38,6 @@ public class BillHttpServerConfiguration extends Configuration {
     public void setDefaultName(String name) {
         this.defaultName = name;
     }
+
+
 }

@@ -1,16 +1,18 @@
-package com.comandante.http.api;
+package com.comandante.http.server;
 
-import com.comandante.GraphManager;
+import com.comandante.BillGraphManager;
+import com.comandante.http.server.resource.BillGraphCreateResource;
+import com.comandante.http.server.resource.BillHttpServerHealthCheck;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 public class BillHttpServerApplication extends Application<BillHttpServerConfiguration> {
 
-    private final GraphManager graphManager;
+    private final BillGraphManager billGraphManager;
 
-    public BillHttpServerApplication(GraphManager graphManager) {
-        this.graphManager = graphManager;
+    public BillHttpServerApplication(BillGraphManager billGraphManager) {
+        this.billGraphManager = billGraphManager;
     }
 
     @Override
@@ -20,16 +22,17 @@ public class BillHttpServerApplication extends Application<BillHttpServerConfigu
 
     @Override
     public void run(BillHttpServerConfiguration billHttpServerConfiguration, Environment environment) throws Exception {
-        final GraphResource resource = new GraphResource(
+        final BillGraphCreateResource resource = new BillGraphCreateResource(
                 billHttpServerConfiguration.getTemplate(),
                 billHttpServerConfiguration.getDefaultName(),
-                graphManager
+                billGraphManager
         );
+        environment.healthChecks().register("bill", new BillHttpServerHealthCheck());
         environment.jersey().register(resource);
     }
 
     @Override
     public String getName() {
-        return "hello-world";
+        return "bill";
     }
 }
