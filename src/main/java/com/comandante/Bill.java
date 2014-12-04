@@ -2,8 +2,8 @@ package com.comandante;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.internal.Maps;
-import com.comandante.http.api.BillHttpServerApplication;
-import com.comandante.http.api.BillHttpServerConfiguration;
+import com.comandante.http.server.BillHttpServerApplication;
+import com.comandante.http.server.BillHttpServerConfiguration;
 import io.dropwizard.cli.ServerCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -19,13 +19,12 @@ public class Bill {
         BillCommand billCommand = new BillCommand();
         new JCommander(billCommand, args);
         System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Bill -" + billCommand.getTitle());
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Billaaaaa" + billCommand.getTitle());
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         BillGraph billGraph = BillGraph.createBillGraph(billCommand);
-        GraphManager graphManager = new GraphManager();
-        graphManager.addGraph(billGraph, billCommand.getReloadInterval());
-        BillHttpServerConfiguration billHttpServerConfiguration = new BillHttpServerConfiguration();
-        BillHttpServerApplication billHttpServerApplication = new BillHttpServerApplication(graphManager);
+        BillGraphManager billGraphManager = new BillGraphManager();
+        billGraphManager.addGraph(billGraph, billCommand.getReloadInterval());
+        BillHttpServerApplication billHttpServerApplication = new BillHttpServerApplication(billGraphManager);
         Bootstrap bootstrap = new Bootstrap(billHttpServerApplication);
         ServerCommand<BillHttpServerConfiguration> serverConfigurationServerCommand = new ServerCommand<BillHttpServerConfiguration>(billHttpServerApplication);
         serverConfigurationServerCommand.run(bootstrap, new Namespace(Maps.<String, Object>newHashMap()));

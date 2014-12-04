@@ -10,14 +10,14 @@ import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class GraphDisplayFrame extends JFrame {
+public class BillGraphDisplayFrame extends JFrame {
 
-    private GraphDisplayPanel graphDisplayPanel;
+    private BillGraphDisplayPanel billGraphDisplayPanel;
     private BillGraph billGraph;
 
-    public GraphDisplayFrame(InputStream is, BillGraph billGraph) throws IOException {
-        graphDisplayPanel = new GraphDisplayPanel(ImageIO.read(is));
-        add(graphDisplayPanel);
+    public BillGraphDisplayFrame(InputStream is, BillGraph billGraph) throws IOException {
+        billGraphDisplayPanel = new BillGraphDisplayPanel(ImageIO.read(is));
+        add(billGraphDisplayPanel);
         setVisible(true);
         setSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
         setTitle(billGraph.getTitle());
@@ -31,10 +31,10 @@ public class GraphDisplayFrame extends JFrame {
     }
 
     public void updateImagePanel(InputStream is) throws IOException {
-        GraphDisplayPanel newPanel = new GraphDisplayPanel(ImageIO.read(is));
+        BillGraphDisplayPanel newPanel = new BillGraphDisplayPanel(ImageIO.read(is));
         this.add(newPanel);
-        this.remove(graphDisplayPanel);
-        this.graphDisplayPanel = newPanel;
+        this.remove(billGraphDisplayPanel);
+        this.billGraphDisplayPanel = newPanel;
         this.repaint();
     }
 }

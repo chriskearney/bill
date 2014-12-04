@@ -1,11 +1,11 @@
-package com.comandante.http.api;
+package com.comandante.http.server.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class BillGraphJson {
+public class BillHttpGraph {
 
     @NotNull
     @JsonProperty
@@ -24,6 +24,9 @@ public class BillGraphJson {
     @NotNull
     @JsonProperty
     private String timezone;
+
+    @JsonProperty
+    private String title;
 
     public String getGraphUrl() {
         return graphUrl;
@@ -63,5 +66,13 @@ public class BillGraphJson {
 
     public void setTimezone(String timezone) {
         this.timezone = timezone;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
