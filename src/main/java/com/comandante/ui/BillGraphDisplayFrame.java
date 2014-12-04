@@ -12,7 +12,6 @@ import java.io.InputStream;
 public class BillGraphDisplayFrame extends JFrame {
 
     private BillGraphDisplayPanel billGraphDisplayPanel;
-    private BillGraph billGraph;
 
     public BillGraphDisplayFrame(InputStream is, final BillGraph billGraph, final BillGraphManager billGraphManager) throws IOException {
         billGraphDisplayPanel = new BillGraphDisplayPanel(ImageIO.read(is));
