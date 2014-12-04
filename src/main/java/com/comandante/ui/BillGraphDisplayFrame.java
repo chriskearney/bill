@@ -21,7 +21,7 @@ public class BillGraphDisplayFrame extends JFrame {
         setVisible(true);
         setSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
         setTitle(billGraph.getTitle());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+       // setDefaultCloseOperation();
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
                 Component c = (Component) evt.getSource();
