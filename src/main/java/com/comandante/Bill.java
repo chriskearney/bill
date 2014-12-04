@@ -33,18 +33,14 @@ public class Bill {
     public static void main(String[] args) throws Exception {
         BillCommand billCommand = new BillCommand();
         new JCommander(billCommand, args);
-        // PreLoad Configuration
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         DB db = DBMaker.newFileDB(getOrCreateUserDataFile()).closeOnJvmShutdown().make();
-        // Open up the graph (if there is one)
         BillGraphManager billGraphManager = new BillGraphManager(db);
         billGraphManager.generateAllGraphs();
         if (billCommand.getGraphUrl() != null) {
             BillHttpClient billHttpClient = new BillHttpClient();
             if (isServerRunning(billHttpClient)) {
-                // If we land here, it means Bill is already running.
-                // Sending the graph to bill using http+json and exiting.
                 sendGraphToBill(billCommand, billHttpClient);
                 System.exit(0);
             } else {
