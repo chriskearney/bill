@@ -27,7 +27,6 @@ public class BillGraphDisplayFrame extends JFrame {
                 Component c = (Component) evt.getSource();
             }
         });
-
     }
 
     public void updateImagePanel(InputStream is) throws IOException {
