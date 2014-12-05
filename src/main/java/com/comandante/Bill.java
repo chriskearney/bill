@@ -30,27 +30,28 @@ public class Bill {
     public static final String CREATE_URL = "http://localhost:" + DEFAULT_HTTP_PORT + "/bill/create";
     public static final String HEALTHCHECK_URL = "http://localhost:" + DEFAULT_HTTP_PORT_ADMIN + "/healthcheck";
 
+    private static BillHttpClient billHttpClient = new BillHttpClient();
+
     public static void main(String[] args) throws Exception {
         BillCommand billCommand = new BillCommand();
         new JCommander(billCommand, args);
+        if (billCommand.getGraphUrl() != null && isServerRunning(billHttpClient)) {
+            sendGraphToBill(billCommand, billHttpClient);
+            System.exit(0);
+        }
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         DB db = DBMaker.newFileDB(getOrCreateUserDataFile()).closeOnJvmShutdown().make();
         BillGraphManager billGraphManager = new BillGraphManager(db);
         billGraphManager.generateAllGraphsFromDisk();
         if (billCommand.getGraphUrl() != null) {
-            BillHttpClient billHttpClient = new BillHttpClient();
-            if (isServerRunning(billHttpClient)) {
-                sendGraphToBill(billCommand, billHttpClient);
-                System.exit(0);
-            } else {
-                billGraphManager.addNewGraph(createBillHttpGraph(billCommand));
-            }
+            billGraphManager.addNewGraph(createBillHttpGraph(billCommand));
         }
         BillHttpServerApplication billHttpServerApplication = new BillHttpServerApplication(billGraphManager);
         Bootstrap bootstrap = new Bootstrap(billHttpServerApplication);
         ServerCommand<BillHttpServerConfiguration> serverConfigurationServerCommand = new ServerCommand<BillHttpServerConfiguration>(billHttpServerApplication);
         serverConfigurationServerCommand.run(bootstrap, new Namespace(Maps.<String, Object>newHashMap()));
+        System.out.println("Bill server started");
     }
 
     private static boolean isServerRunning(BillHttpClient billHttpClient) {
