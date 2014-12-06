@@ -27,6 +27,7 @@ public class BillGraphRefresher extends AbstractScheduledService {
         InputStream is = null;
         try {
             is = billHttpClient.getBillGraph(this.billGraph);
+            System.out.println("Inside of the thread, width is: " + this.billGraph.getWidth());
             if (billGraphDisplayFrame == null) {
                 billGraphDisplayFrame = new BillGraphDisplayFrame(is, billGraph, billGraphManager);
                 return;
@@ -47,4 +48,5 @@ public class BillGraphRefresher extends AbstractScheduledService {
     public BillGraph getBillGraph() {
         return billGraph;
     }
+
 }

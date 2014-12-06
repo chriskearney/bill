@@ -6,6 +6,8 @@ import com.comandante.BillGraphManager;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -23,6 +25,12 @@ public class BillGraphDisplayFrame extends JFrame {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 billGraphManager.removeGraph(billGraph.getId());
+            }
+        });
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                billGraphManager.resizeGraph(billGraph.getId(), e.getComponent().getWidth(), e.getComponent().getHeight());
             }
         });
     }
