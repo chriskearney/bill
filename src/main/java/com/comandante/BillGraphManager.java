@@ -15,14 +15,12 @@ public class BillGraphManager {
     private HTreeMap<String, BillHttpGraph> billHttpGraphs;
     private Map<String, BillGraphRefresher> refresherMap;
     private static final String BILL_HTTP_GRAPH_DB = "billHttpGraphs";
-    private final DB db;
     private final ResizeService resizeService;
 
     public BillGraphManager(DB db) {
         billHttpGraphs = db.createHashMap(BILL_HTTP_GRAPH_DB)
                 .valueSerializer(new BillHttpGraphSerializer())
                 .makeOrGet();
-        this.db = db;
         this.refresherMap = Maps.newConcurrentMap();
         this.resizeService = new ResizeService();
         this.resizeService.startAsync();
@@ -40,8 +38,8 @@ public class BillGraphManager {
         billHttpGraphs.remove(id);
     }
 
-    public void resizeGraph(ResizeEvent resizeEvent) {
-        resizeService.process(resizeEvent);
+    public void resizeGraph(BillResizeEvent billResizeEvent) {
+        resizeService.process(billResizeEvent);
     }
 
     private void startGraph(BillGraph billGraph, int reload) {
@@ -59,26 +57,26 @@ public class BillGraphManager {
     }
 
     class ResizeService extends AbstractExecutionThreadService {
-        private final LinkedBlockingQueue<ResizeEvent> events;
+        private final LinkedBlockingQueue<BillResizeEvent> events;
 
         public ResizeService() {
-            this.events = new LinkedBlockingQueue<ResizeEvent>();
+            this.events = new LinkedBlockingQueue<BillResizeEvent>();
         }
 
         @Override
         protected void run() throws Exception {
             while (true) {
-                ResizeEvent take = events.take();
-                BillHttpGraph billHttpGraph = billHttpGraphs.get(take.getId());
-                billHttpGraph.setWidth(take.getWidth());
-                billHttpGraph.setHeight(take.getHeight());
-                billHttpGraphs.put(take.getId(), billHttpGraph);
-                refresherMap.get(take.getId()).getBillGraph().reSize(take.getWidth(), take.getHeight());
+                BillResizeEvent event = events.take();
+                BillHttpGraph billHttpGraph = billHttpGraphs.get(event.getId());
+                billHttpGraph.setWidth(event.getWidth());
+                billHttpGraph.setHeight(event.getHeight());
+                billHttpGraphs.put(event.getId(), billHttpGraph);
+                refresherMap.get(event.getId()).getBillGraph().reSize(event.getWidth(), event.getHeight());
             }
         }
 
-        public void process(ResizeEvent resizeEvent) {
-            events.add(resizeEvent);
+        public void process(BillResizeEvent billResizeEvent) {
+            events.add(billResizeEvent);
         }
     }
 }

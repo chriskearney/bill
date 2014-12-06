@@ -1,12 +1,12 @@
 package com.comandante;
 
 
-public class ResizeEvent {
+public class BillResizeEvent {
     private final String id;
     private final int width;
     private final int height;
 
-    public ResizeEvent(int height, int width, String id) {
+    public BillResizeEvent(int height, int width, String id) {
         this.height = height;
         this.width = width;
         this.id = id;
@@ -24,32 +24,32 @@ public class ResizeEvent {
         return height;
     }
 
-    public static ResizeEventBuilder newBuilder() {
-        return new ResizeEventBuilder();
+    public static BillResizeEventBuilder newBuilder() {
+        return new BillResizeEventBuilder();
     }
 
-    public static class ResizeEventBuilder {
+    public static class BillResizeEventBuilder {
         private int height;
         private int width;
         private String id;
 
-        public ResizeEventBuilder setHeight(int height) {
+        public BillResizeEventBuilder setHeight(int height) {
             this.height = height;
             return this;
         }
 
-        public ResizeEventBuilder setWidth(int width) {
+        public BillResizeEventBuilder setWidth(int width) {
             this.width = width;
             return this;
         }
 
-        public ResizeEventBuilder setId(String id) {
+        public BillResizeEventBuilder setId(String id) {
             this.id = id;
             return this;
         }
 
-        public ResizeEvent build() {
-            return new ResizeEvent(height, width, id);
+        public BillResizeEvent build() {
+            return new BillResizeEvent(height, width, id);
         }
 
     }
