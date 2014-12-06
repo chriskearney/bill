@@ -61,7 +61,7 @@ public class BillGraph {
         }
         BillGraph billGraph = null;
         try {
-            billGraph = new BillGraph(newId, graphUrl, width, height + 20, title);
+            billGraph = new BillGraph(newId, graphUrl, width, height, title);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

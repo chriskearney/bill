@@ -35,7 +35,7 @@ public class BillGraphRefresher extends AbstractScheduledService {
             e.printStackTrace();
         }
         if (is != null) {
-            billGraphDisplayFrame.updateImagePanel(is);
+            billGraphDisplayFrame.updateImagePanel(is, billGraph);
         }
     }
 

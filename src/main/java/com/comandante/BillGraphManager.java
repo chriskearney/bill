@@ -46,8 +46,8 @@ public class BillGraphManager {
         billHttpGraphs.remove(id);
     }
 
-    public void resizeGraph(BillResizeEvent billResizeEvent) {
-        resizeService.process(billResizeEvent);
+    public void resizeGraph(BillResizeEvent event) {
+        resizeService.process(event);
     }
 
     private void startGraph(BillGraph billGraph, int reload) {
@@ -66,18 +66,27 @@ public class BillGraphManager {
 
     class ResizeService extends AbstractExecutionThreadService {
         private final LinkedBlockingQueue<BillResizeEvent> events;
+
         RemovalListener<String, BillResizeEvent> removalListener = new RemovalListener<String, BillResizeEvent>() {
             public void onRemoval(RemovalNotification<String, BillResizeEvent> removal) {
                 try {
                     System.out.println(removal.getCause());
                     if (removal.getCause().equals(RemovalCause.EXPIRED)) {
-                        refresherMap.get(removal.getValue().getId()).runOneIteration();
+                        BillResizeEvent billResizeEvent = removal.getValue();
+                        if (billResizeEvent != null) {
+                            BillResizeEvent event = removal.getValue();
+                            BillGraphRefresher billGraphRefresher = refresherMap.get(event.getId());
+                            if (billGraphRefresher != null) {
+                                billGraphRefresher.runOneIteration();
+                            }
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
+
         Cache<String, BillResizeEvent> eventCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(1, TimeUnit.SECONDS)
                 .removalListener(removalListener)
@@ -90,9 +99,9 @@ public class BillGraphManager {
             this.ses.scheduleWithFixedDelay(
                     new Runnable() {
                         public void run() {
-                                eventCache.cleanUp();
+                            eventCache.cleanUp();
                         }
-                    }, 0, 500, TimeUnit.MILLISECONDS);
+                    }, 0, 50, TimeUnit.MILLISECONDS);
         }
 
         @Override
