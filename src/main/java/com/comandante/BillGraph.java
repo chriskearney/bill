@@ -5,6 +5,7 @@ import com.comandante.http.server.resource.BillHttpGraph;
 import com.google.common.base.Optional;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -74,6 +75,13 @@ public class BillGraph {
         return billGraph;
     }
 
+    public void reSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        setPair("height", Integer.toString(height));
+        setPair("width", Integer.toString(width));
+    }
+
     private boolean doesKeyExistInPairs(String k) {
         for (NameValuePair nvp : graphUrlPairs) {
             if (nvp.getName().equals(k)) {
@@ -102,17 +110,7 @@ public class BillGraph {
         while (nameValuePairListIterator.hasNext()) {
             final NameValuePair next = nameValuePairListIterator.next();
             if (next.getName().equals(k)) {
-                nameValuePairListIterator.set(new NameValuePair() {
-                    @Override
-                    public String getName() {
-                        return next.getName();
-                    }
-
-                    @Override
-                    public String getValue() {
-                        return v;
-                    }
-                });
+                nameValuePairListIterator.set(new BasicNameValuePair(k, v));
             }
         }
 

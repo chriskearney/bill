@@ -41,7 +41,10 @@ public class Bill {
         }
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        DB db = DBMaker.newFileDB(getOrCreateUserDataFile()).closeOnJvmShutdown().make();
+        DB db = DBMaker.newFileDB(getOrCreateUserDataFile())
+                .closeOnJvmShutdown()
+                .transactionDisable()
+                .make();
         BillGraphManager billGraphManager = new BillGraphManager(db);
         billGraphManager.generateAllGraphsFromDisk();
         if (billCommand.getGraphUrl() != null) {
