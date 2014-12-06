@@ -20,15 +20,15 @@ public class BillGraphDisplayFrame extends JFrame {
         billGraphDisplayPanel = new BillGraphDisplayPanel(ImageIO.read(is));
         add(billGraphDisplayPanel);
         setVisible(true);
-        setSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
         setTitle(billGraph.getTitle());
+        getContentPane().setPreferredSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 billGraphManager.removeGraph(billGraph.getId());
             }
         });
-        addComponentListener(new ComponentAdapter() {
+        getRootPane().addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 BillResizeEvent billResizeEvent = BillResizeEvent.newBuilder()
@@ -39,14 +39,17 @@ public class BillGraphDisplayFrame extends JFrame {
                 billGraphManager.resizeGraph(billResizeEvent);
             }
         });
+        pack();
     }
 
-    public void updateImagePanel(InputStream is) throws IOException {
+    public void updateImagePanel(InputStream is, BillGraph billGraph) throws IOException {
         BillGraphDisplayPanel newPanel = new BillGraphDisplayPanel(ImageIO.read(is));
         this.add(newPanel);
         this.remove(billGraphDisplayPanel);
         this.billGraphDisplayPanel = newPanel;
+        this.getContentPane().setPreferredSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
         this.repaint();
+        this.pack();
     }
 }
 
