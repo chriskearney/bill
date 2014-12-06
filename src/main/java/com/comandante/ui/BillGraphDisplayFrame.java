@@ -2,7 +2,7 @@ package com.comandante.ui;
 
 import com.comandante.BillGraph;
 import com.comandante.BillGraphManager;
-import com.comandante.ResizeEvent;
+import com.comandante.BillResizeEvent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -31,12 +31,12 @@ public class BillGraphDisplayFrame extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                ResizeEvent resizeEvent = ResizeEvent.newBuilder()
+                BillResizeEvent billResizeEvent = BillResizeEvent.newBuilder()
                         .setWidth(e.getComponent().getWidth())
                         .setHeight(e.getComponent().getHeight())
                         .setId(billGraph.getId())
                         .build();
-                billGraphManager.resizeGraph(resizeEvent);
+                billGraphManager.resizeGraph(billResizeEvent);
             }
         });
     }
