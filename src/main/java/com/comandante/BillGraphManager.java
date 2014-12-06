@@ -40,13 +40,8 @@ public class BillGraphManager {
         billHttpGraphs.remove(id);
     }
 
-    public void resizeGraph(String id, int width, int height) {
-        // I pretty much had to async this or resizing a window was choppy/shitty.
-        resizeService.process(ResizeEvent.newBuilder()
-                .setWidth(width)
-                .setHeight(height)
-                .setId(id)
-                .build());
+    public void resizeGraph(ResizeEvent resizeEvent) {
+        resizeService.process(resizeEvent);
     }
 
     private void startGraph(BillGraph billGraph, int reload) {
@@ -79,7 +74,6 @@ public class BillGraphManager {
                 billHttpGraph.setHeight(take.getHeight());
                 billHttpGraphs.put(take.getId(), billHttpGraph);
                 refresherMap.get(take.getId()).getBillGraph().reSize(take.getWidth(), take.getHeight());
-                System.out.println("Successfully processed resize Event.");
             }
         }
 
