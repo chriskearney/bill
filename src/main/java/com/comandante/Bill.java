@@ -11,6 +11,8 @@ import com.google.common.io.Files;
 import io.dropwizard.cli.ServerCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
@@ -29,6 +31,8 @@ public class Bill {
     public static final int DEFAULT_HTTP_PORT_ADMIN = 32225;
     public static final String CREATE_URL = "http://localhost:" + DEFAULT_HTTP_PORT + "/bill/create";
     public static final String HEALTHCHECK_URL = "http://localhost:" + DEFAULT_HTTP_PORT_ADMIN + "/healthcheck";
+
+    private static final Logger log = LogManager.getLogger(Bill.class);
 
     private static BillHttpClient billHttpClient = new BillHttpClient();
 
@@ -54,7 +58,7 @@ public class Bill {
         Bootstrap bootstrap = new Bootstrap(billHttpServerApplication);
         ServerCommand<BillHttpServerConfiguration> serverConfigurationServerCommand = new ServerCommand<BillHttpServerConfiguration>(billHttpServerApplication);
         serverConfigurationServerCommand.run(bootstrap, new Namespace(Maps.<String, Object>newHashMap()));
-        System.out.println("Bill server started");
+        log.info("Bill server started");
     }
 
     private static boolean isServerRunning(BillHttpClient billHttpClient) {

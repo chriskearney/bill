@@ -9,10 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class BillGraphDisplayFrame extends JFrame {
+public class BillGraphDisplayFrame extends JFrame implements KeyListener {
 
     private BillGraphDisplayPanel billGraphDisplayPanel;
 
@@ -40,6 +42,8 @@ public class BillGraphDisplayFrame extends JFrame {
             }
         });
         pack();
+        com.apple.eawt.FullScreenUtilities.setWindowCanFullScreen(this, true);
+        addKeyListener(this);
     }
 
     public void updateImagePanel(InputStream is, BillGraph billGraph) throws IOException {
@@ -50,6 +54,23 @@ public class BillGraphDisplayFrame extends JFrame {
         this.getContentPane().setPreferredSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
         this.repaint();
         this.pack();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        if (e.getKeyChar() == 'f'){
+            com.apple.eawt.Application.getApplication().requestToggleFullScreen(this);
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
 
