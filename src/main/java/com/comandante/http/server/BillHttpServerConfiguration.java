@@ -14,7 +14,7 @@ public class BillHttpServerConfiguration extends Configuration {
         ((HttpConnectorFactory) ((DefaultServerFactory) getServerFactory()).getApplicationConnectors().get(0)).setPort(Bill.DEFAULT_HTTP_PORT);
         ((HttpConnectorFactory) ((DefaultServerFactory) getServerFactory()).getAdminConnectors().get(0)).setPort(Bill.DEFAULT_HTTP_PORT_ADMIN);
 
-        getLoggingFactory().setLevel(Level.DEBUG);
+        getLoggingFactory().setLevel(Level.INFO);
     }
 
     @NotEmpty
