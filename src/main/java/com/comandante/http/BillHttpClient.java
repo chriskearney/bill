@@ -7,6 +7,8 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +17,7 @@ import java.net.URL;
 public class BillHttpClient {
 
     private final HttpRequestFactory requestFactory;
+    private static final Logger log = LogManager.getLogger(BillHttpClient.class);
 
     public BillHttpClient() {
         requestFactory = new NetHttpTransport().createRequestFactory();
@@ -27,6 +30,7 @@ public class BillHttpClient {
     private InputStream getGraphData(String url) throws IOException {
         HttpRequest httpRequest = requestFactory.buildGetRequest(new GenericUrl(new URL(url)));
         HttpResponse execute = httpRequest.execute();
+        log.debug("Retrieve graph via http " + url);
         return execute.getContent();
     }
 

@@ -9,6 +9,8 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 
@@ -24,6 +26,9 @@ public class BillGraphManager {
     private Map<String, BillGraphRefresher> refresherMap;
     private static final String BILL_HTTP_GRAPH_DB = "billHttpGraphs";
     private final ResizeService resizeService;
+
+    private static final Logger log = LogManager.getLogger(BillGraphManager.class);
+
 
     public BillGraphManager(DB db) {
         billHttpGraphs = db.createHashMap(BILL_HTTP_GRAPH_DB)
@@ -70,7 +75,7 @@ public class BillGraphManager {
         RemovalListener<String, BillResizeEvent> removalListener = new RemovalListener<String, BillResizeEvent>() {
             public void onRemoval(RemovalNotification<String, BillResizeEvent> removal) {
                 try {
-                    System.out.println(removal.getCause());
+                    log.debug(removal.getCause());
                     if (removal.getCause().equals(RemovalCause.EXPIRED)) {
                         BillResizeEvent billResizeEvent = removal.getValue();
                         if (billResizeEvent != null) {
@@ -110,7 +115,7 @@ public class BillGraphManager {
                 BillResizeEvent event = events.take();
                 BillHttpGraph billHttpGraph = billHttpGraphs.get(event.getId());
                 if (billHttpGraph.getWidth() != event.getWidth() || billHttpGraph.getHeight() != event.getHeight()) {
-                    System.out.println("found a difference updating resize cache.");
+                    log.debug("found a difference updating resize cache.");
                     billHttpGraph.setWidth(event.getWidth());
                     billHttpGraph.setHeight(event.getHeight());
                     billHttpGraphs.put(event.getId(), billHttpGraph);
@@ -118,7 +123,7 @@ public class BillGraphManager {
                     eventCache.invalidate(event.getId());
                     eventCache.put(event.getId(), event);
                 } else {
-                    System.out.println("no difference detected, skipping");
+                    log.debug("no difference detected, skipping");
                 }
             }
         }
