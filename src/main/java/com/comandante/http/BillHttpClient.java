@@ -30,7 +30,7 @@ public class BillHttpClient {
     private InputStream getGraphData(String url) throws IOException {
         HttpRequest httpRequest = requestFactory.buildGetRequest(new GenericUrl(new URL(url)));
         HttpResponse execute = httpRequest.execute();
-        log.debug("Retrieve graph via http " + url);
+        log.info("Retrieve graph via http " + url);
         return execute.getContent();
     }
 
@@ -42,6 +42,7 @@ public class BillHttpClient {
     public boolean createGraph(String url, String json) throws IOException {
         HttpRequest httpRequest = requestFactory.buildPostRequest(new GenericUrl(new URL(url)), ByteArrayContent.fromString("application/json", json));
         httpRequest.getHeaders().setContentType("application/json");
+        log.info("Attempting to create graph with json: " + json);
         return httpRequest.execute().isSuccessStatusCode();
     }
 }
