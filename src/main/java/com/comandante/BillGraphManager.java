@@ -26,9 +26,7 @@ public class BillGraphManager {
     private Map<String, BillGraphRefresher> refresherMap;
     private static final String BILL_HTTP_GRAPH_DB = "billHttpGraphs";
     private final ResizeService resizeService;
-
     private static final Logger log = LogManager.getLogger(BillGraphManager.class);
-
 
     public BillGraphManager(DB db) {
         billHttpGraphs = db.createHashMap(BILL_HTTP_GRAPH_DB)
@@ -43,6 +41,7 @@ public class BillGraphManager {
         BillGraph billGraph = BillGraph.createBillGraph(billHttpGraph, Optional.<String>absent());
         startGraph(billGraph, billHttpGraph.getRefreshRate());
         billHttpGraphs.put(billGraph.getId(), billHttpGraph);
+        log.info("Graph added : " + billGraph);
     }
 
     public void removeGraph(String id) {
@@ -74,20 +73,20 @@ public class BillGraphManager {
 
         RemovalListener<String, BillResizeEvent> removalListener = new RemovalListener<String, BillResizeEvent>() {
             public void onRemoval(RemovalNotification<String, BillResizeEvent> removal) {
+                BillResizeEvent event = removal.getValue();
                 try {
-                    log.debug(removal.getCause());
+                    log.debug("Graph " + event.getId()  + " resize cache evicted with reason: " + removal.getCause());
                     if (removal.getCause().equals(RemovalCause.EXPIRED)) {
-                        BillResizeEvent billResizeEvent = removal.getValue();
-                        if (billResizeEvent != null) {
-                            BillResizeEvent event = removal.getValue();
+                        if (event != null) {
                             BillGraphRefresher billGraphRefresher = refresherMap.get(event.getId());
                             if (billGraphRefresher != null) {
                                 billGraphRefresher.runOneIteration();
+                                log.debug("Graph resize refresh completed (" + event.getWidth() + "x" + event.getHeight() + ")");
                             }
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("Unable to complete a refresh resize attempt.", e);
                 }
             }
         };
@@ -115,7 +114,7 @@ public class BillGraphManager {
                 BillResizeEvent event = events.take();
                 BillHttpGraph billHttpGraph = billHttpGraphs.get(event.getId());
                 if (billHttpGraph.getWidth() != event.getWidth() || billHttpGraph.getHeight() != event.getHeight()) {
-                    log.debug("found a difference updating resize cache.");
+                    log.debug("ResizeEvent triggered with coordinates: " + event.getWidth() + "x" + event.getHeight());
                     billHttpGraph.setWidth(event.getWidth());
                     billHttpGraph.setHeight(event.getHeight());
                     billHttpGraphs.put(event.getId(), billHttpGraph);
@@ -123,7 +122,7 @@ public class BillGraphManager {
                     eventCache.invalidate(event.getId());
                     eventCache.put(event.getId(), event);
                 } else {
-                    log.debug("no difference detected, skipping");
+                    log.debug("ResizeEvent dropped, dimensions are the same. (" + event.getWidth() + "x" + event.getHeight() + ")");
                 }
             }
         }

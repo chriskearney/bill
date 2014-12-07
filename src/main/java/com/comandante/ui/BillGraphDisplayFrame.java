@@ -17,9 +17,11 @@ import java.io.InputStream;
 public class BillGraphDisplayFrame extends JFrame implements KeyListener {
 
     private BillGraphDisplayPanel billGraphDisplayPanel;
+    private final BillGraphManager billGraphManager;
 
     public BillGraphDisplayFrame(InputStream is, final BillGraph billGraph, final BillGraphManager billGraphManager) throws IOException {
-        billGraphDisplayPanel = new BillGraphDisplayPanel(ImageIO.read(is));
+        this.billGraphDisplayPanel = new BillGraphDisplayPanel(ImageIO.read(is));
+        this.billGraphManager = billGraphManager;
         add(billGraphDisplayPanel);
         setVisible(true);
         setTitle(billGraph.getTitle());
@@ -60,6 +62,9 @@ public class BillGraphDisplayFrame extends JFrame implements KeyListener {
     public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == 'f'){
             com.apple.eawt.Application.getApplication().requestToggleFullScreen(this);
+        }
+        if (e.getKeyChar() == 'o'){
+            new BillGraphCreateFrame(billGraphManager).setVisible(true);
         }
     }
 
