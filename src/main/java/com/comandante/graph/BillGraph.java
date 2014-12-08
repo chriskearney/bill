@@ -157,7 +157,7 @@ public class BillGraph {
     }
 
     public String getTitle() {
-        return title;
+        return title + " (" + getGraphDuration() + ")";
     }
 
     public String getGraphDuration() {
