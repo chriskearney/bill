@@ -1,6 +1,7 @@
 package com.comandante.http.server.resource;
 
-import com.comandante.BillGraphManager;
+import com.comandante.graph.BillGraphManager;
+import com.comandante.graph.BillHttpGraph;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

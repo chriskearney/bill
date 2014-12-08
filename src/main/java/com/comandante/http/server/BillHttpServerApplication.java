@@ -1,6 +1,6 @@
 package com.comandante.http.server;
 
-import com.comandante.BillGraphManager;
+import com.comandante.graph.BillGraphManager;
 import com.comandante.http.server.resource.BillGraphCreateResource;
 import com.comandante.http.server.resource.BillHttpServerHealthCheck;
 import io.dropwizard.Application;

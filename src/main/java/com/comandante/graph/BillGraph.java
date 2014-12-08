@@ -1,7 +1,6 @@
-package com.comandante;
+package com.comandante.graph;
 
 import com.beust.jcommander.internal.Maps;
-import com.comandante.http.server.resource.BillHttpGraph;
 import com.google.common.base.Optional;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;

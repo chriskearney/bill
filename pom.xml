@@ -49,6 +49,11 @@
       <artifactId>forms</artifactId>
       <version>1.2.1</version>
     </dependency>
+      <dependency>
+        <groupId>com.apple</groupId>
+        <artifactId>eawt</artifactId>
+        <version>1.6</version>
+      </dependency>
   </dependencies>
 
   <build>
