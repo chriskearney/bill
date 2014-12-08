@@ -33,12 +33,16 @@ public class Bill {
     public static final String HEALTHCHECK_URL = "http://localhost:" + DEFAULT_HTTP_PORT_ADMIN + "/healthcheck";
 
     private static final Logger log = LogManager.getLogger(Bill.class);
+    private static boolean isDebug = false;
 
     private static BillHttpClient billHttpClient = new BillHttpClient();
 
     public static void main(String[] args) throws Exception {
         BillCommand billCommand = new BillCommand();
         new JCommander(billCommand, args);
+        if (billCommand.isDebug()) {
+            isDebug = true;
+        }
         if (billCommand.getGraphUrl() != null && isServerRunning(billHttpClient)) {
             sendGraphToBill(billCommand, billHttpClient);
             System.exit(0);
@@ -103,5 +107,9 @@ public class Bill {
 
     public static String getUserDataFile() {
         return getUserDataDirectory() + BILL_DB_FILENAME;
+    }
+
+    public static boolean isDebug() {
+        return isDebug;
     }
 }
