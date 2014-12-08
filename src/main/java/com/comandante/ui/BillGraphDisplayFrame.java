@@ -1,14 +1,16 @@
 package com.comandante.ui;
 
-import com.beust.jcommander.internal.Lists;
 import com.comandante.Bill;
 import com.comandante.graph.BillGraph;
 import com.comandante.graph.BillGraphManager;
 import com.comandante.graph.BillResizeEvent;
+import com.google.common.collect.ImmutableSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -16,6 +18,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 
 public class BillGraphDisplayFrame extends JFrame {
 
@@ -88,33 +91,52 @@ public class BillGraphDisplayFrame extends JFrame {
                 }
             });
             add(addGraphItem);
+            JMenuItem copyGraphUrl = new JMenuItem("Copy Graph Url");
+            addGraphItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            StringSelection selection = new StringSelection(billGraph.getGraphUrl());
+                            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                            clipboard.setContents(selection, selection);
+                        }
+                    });
+                }
+            });
+            add(copyGraphUrl);
         }
     }
 
+    private static Set<String> validDurations = ImmutableSet.<String>builder()
+            .add("-1hours")
+            .add("-3hours")
+            .add("-6hours")
+            .add("-12hours")
+            .add("-1days")
+            .add("-2days")
+            .add("-3days")
+            .add("-1weeks")
+            .add("-2weeks")
+            .add("-1months")
+            .add("-2months")
+            .add("-3months")
+            .add("-6months")
+            .add("-1years")
+            .add("-2years")
+            .build();
+
     class GraphEditMenu extends JMenu {
+
         public GraphEditMenu() {
             super("Duration");
-            java.util.List<JMenuItem> durations = Lists.newArrayList();
-            durations.add(new JMenuItem("-1hours"));
-            durations.add(new JMenuItem("-3hours"));
-            durations.add(new JMenuItem("-6hours"));
-            durations.add(new JMenuItem("-12hours"));
-            durations.add(new JMenuItem("-1days"));
-            durations.add(new JMenuItem("-2days"));
-            durations.add(new JMenuItem("-3days"));
-            durations.add(new JMenuItem("-1weeks"));
-            durations.add(new JMenuItem("-2weeks"));
-            durations.add(new JMenuItem("-1months"));
-            durations.add(new JMenuItem("-2months"));
-            durations.add(new JMenuItem("-3months"));
-            durations.add(new JMenuItem("-6months"));
-            durations.add(new JMenuItem("-1years"));
-            durations.add(new JMenuItem("-2years"));
-            for (final JMenuItem item : durations) {
-                item.addActionListener(new ActionListener() {
+            for (String duration : validDurations) {
+                final JMenuItem jMenuItem = new JMenuItem(duration);
+                jMenuItem.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        final String duration = item.getText();
+                        final String duration = jMenuItem.getText();
                         EventQueue.invokeLater(new Runnable() {
                             @Override
                             public void run() {
@@ -123,7 +145,7 @@ public class BillGraphDisplayFrame extends JFrame {
                         });
                     }
                 });
-                add(item);
+                add(jMenuItem);
             }
         }
     }
