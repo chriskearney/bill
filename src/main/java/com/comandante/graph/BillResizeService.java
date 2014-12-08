@@ -27,7 +27,6 @@ public class BillResizeService extends AbstractExecutionThreadService {
     private final static int DO_RESIZE_AFTER_DONE_RESIZING_WINDOW_SECONDS = 1;
     private final LinkedBlockingQueue<BillResizeEvent> events;
     private final BillGraphManager billGraphManager;
-    private final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
     private final Cache<String, BillResizeEvent> eventCache = CacheBuilder.newBuilder()
             .expireAfterWrite(DO_RESIZE_AFTER_DONE_RESIZING_WINDOW_SECONDS, TimeUnit.SECONDS)
             .removalListener(new ResizeRemovalListener())
@@ -41,7 +40,8 @@ public class BillResizeService extends AbstractExecutionThreadService {
         /**
          * Necessary to keep the cache "active" so that expirations will fire.
          */
-        this.ses.scheduleWithFixedDelay(
+        ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+        ses.scheduleWithFixedDelay(
                 new Runnable() {
                     public void run() {
                         eventCache.cleanUp();
