@@ -1,5 +1,6 @@
 package com.comandante.ui;
 
+import com.comandante.Bill;
 import com.comandante.graph.BillGraph;
 import com.comandante.graph.BillGraphManager;
 import com.comandante.graph.BillResizeEvent;
@@ -46,7 +47,9 @@ public class BillGraphDisplayFrame extends JFrame implements KeyListener {
             }
         });
         this.pack();
-        com.apple.eawt.FullScreenUtilities.setWindowCanFullScreen(this, true);
+        if (Bill.isOSX()) {
+            com.apple.eawt.FullScreenUtilities.setWindowCanFullScreen(this, true);
+        }
         addKeyListener(this);
     }
 
@@ -63,7 +66,9 @@ public class BillGraphDisplayFrame extends JFrame implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == 'f'){
-            com.apple.eawt.Application.getApplication().requestToggleFullScreen(this);
+            if (Bill.isOSX()) {
+                com.apple.eawt.Application.getApplication().requestToggleFullScreen(this);
+            }
         }
         if (e.getKeyChar() == 'o'){
             new BillGraphCreateFrame(billGraphManager).setVisible(true);
