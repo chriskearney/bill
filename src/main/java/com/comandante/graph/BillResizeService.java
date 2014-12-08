@@ -24,11 +24,12 @@ import java.util.concurrent.TimeUnit;
  * border.)
  */
 public class BillResizeService extends AbstractExecutionThreadService {
+    private final static int DO_RESIZE_AFTER_DONE_RESIZING_WINDOW_SECONDS = 1;
     private final LinkedBlockingQueue<BillResizeEvent> events;
     private final BillGraphManager billGraphManager;
     private final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
     private final Cache<String, BillResizeEvent> eventCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(1, TimeUnit.SECONDS)
+            .expireAfterWrite(DO_RESIZE_AFTER_DONE_RESIZING_WINDOW_SECONDS, TimeUnit.SECONDS)
             .removalListener(new ResizeRemovalListener())
             .build();
 
