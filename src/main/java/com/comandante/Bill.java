@@ -48,7 +48,9 @@ public class Bill {
             sendGraphToBill(billCommand, billHttpClient);
             System.exit(0);
         }
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        if (isOSX()) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         DB db = DBMaker.newFileDB(getOrCreateUserDataFile())
                 .closeOnJvmShutdown()
@@ -112,5 +114,10 @@ public class Bill {
 
     public static boolean isDebug() {
         return isDebug;
+    }
+
+    public static boolean isOSX() {
+        String osName = System.getProperty("os.name");
+        return osName.contains("OS X");
     }
 }
