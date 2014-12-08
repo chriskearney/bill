@@ -15,18 +15,23 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Resizing a window in Swing generates many ComponentResized events
- * and I don't want to call home to a graphite server for each one, so I track events
- * and wait for them to stop before requesting a graph.
  * Stores BillResizeEvents in a queue.  A Worker thread takes events from the queue
- * and places them into a Guava Cache with an expireAfterWrite config and a custom
+ * and places them into a Guava Cache with an expireAfterWrite policy and a custom
  * RemovalListener that will "refresh" the graphs upon any Cache Removal's with the
- * "EXPIRED" cause.
+ * "EXPIRED" cause. All of this event processing is necessary as many many events are
+ * fired when a window is resized.  We only want to grab a graph from graphite after
+ * a pause in event firing (signalling that the user is done dragging the window
+ * border.)
  */
 public class BillResizeService extends AbstractExecutionThreadService {
     private final LinkedBlockingQueue<BillResizeEvent> events;
     private final BillGraphManager billGraphManager;
     private final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+    private final Cache<String, BillResizeEvent> eventCache = CacheBuilder.newBuilder()
+            .expireAfterWrite(1, TimeUnit.SECONDS)
+            .removalListener(new ResizeRemovalListener())
+            .build();
+
     private static final Logger log = LogManager.getLogger(BillResizeService.class);
 
     public BillResizeService(BillGraphManager billGraphManager) {
@@ -40,19 +45,13 @@ public class BillResizeService extends AbstractExecutionThreadService {
                 }, 0, 50, TimeUnit.MILLISECONDS);
     }
 
-    Cache<String, BillResizeEvent> eventCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(1, TimeUnit.SECONDS)
-            .removalListener(new ResizeRemovalListener())
-            .build();
-
     public void process(BillResizeEvent billResizeEvent) {
         events.add(billResizeEvent);
     }
 
     /**
-     * Remove BillResizeEvents from the Queue and determine if they are valid before
-     * adding them to the event cache.  If either the width or the height is the same
-     * as the current BillGraph, we skip the cache as there is no resize to be performed.
+     * If either the width or the height is the same as the current BillGraph,
+     * we skip the cache as there is no resize to be performed.
      * @throws Exception
      */
     @Override
