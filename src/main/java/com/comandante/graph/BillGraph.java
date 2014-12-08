@@ -160,20 +160,8 @@ public class BillGraph {
         return title;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     public String getGraphDuration() {
         return graphDuration;
-    }
-
-    public void setGraphDuration(String graphDuration) {
-        this.graphDuration = graphDuration;
     }
 
     public String getId() {

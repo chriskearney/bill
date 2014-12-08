@@ -44,6 +44,22 @@ public class BillGraphManager {
         resizeService.process(event);
     }
 
+    public void updateGraphDuration(String graphId, String duration){
+        BillHttpGraph billHttpGraph = billHttpGraphs.get(graphId);
+        if (billHttpGraph.getGraphDuration().equals(duration)) {
+            log.debug("Graph duration is unchanged, skipping update.");
+            return;
+        }
+        billHttpGraph.setGraphDuration(duration);
+        billHttpGraphs.put(graphId, billHttpGraph);
+        this.getRefresherMap().get(graphId).getBillGraph().updateDuration(duration);
+        try {
+            this.getRefresherMap().get(graphId).runOneIteration();
+        } catch (Exception e) {
+            log.error("Unable to update graph duration.", e);
+        }
+    }
+
     private void startGraph(BillGraph billGraph, int reload) {
         BillGraphRefresher billGraphRefresher = new BillGraphRefresher(this, billGraph, reload);
         billGraphRefresher.startAsync();
