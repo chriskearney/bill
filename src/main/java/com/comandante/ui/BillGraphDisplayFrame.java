@@ -25,6 +25,7 @@ public class BillGraphDisplayFrame extends JFrame {
     private BillGraphDisplayPanel billGraphDisplayPanel;
     private final BillGraphManager billGraphManager;
     private final BillGraph billGraph;
+    private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     static GraphicsDevice device = GraphicsEnvironment
             .getLocalGraphicsEnvironment().getScreenDevices()[0];
 
@@ -92,14 +93,13 @@ public class BillGraphDisplayFrame extends JFrame {
             });
             add(addGraphItem);
             JMenuItem copyGraphUrl = new JMenuItem("Copy Graph Url");
-            addGraphItem.addActionListener(new ActionListener() {
+            copyGraphUrl.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
                             StringSelection selection = new StringSelection(billGraph.getGraphUrl());
-                            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                             clipboard.setContents(selection, selection);
                         }
                     });
