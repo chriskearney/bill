@@ -46,7 +46,7 @@ public class BillGraphManager {
 
     public void updateGraphDuration(String graphId, String duration){
         BillHttpGraph billHttpGraph = billHttpGraphs.get(graphId);
-        if (billHttpGraph.getGraphDuration().equals(duration)) {
+        if (billHttpGraph.getGraphDuration() != null && billHttpGraph.getGraphDuration().equals(duration)) {
             log.debug("Graph duration is unchanged, skipping update.");
             return;
         }
