@@ -37,6 +37,9 @@ public class BillResizeService extends AbstractExecutionThreadService {
     public BillResizeService(BillGraphManager billGraphManager) {
         this.events = new LinkedBlockingQueue<BillResizeEvent>();
         this.billGraphManager = billGraphManager;
+        /**
+         * Necessary to keep the cache "active" so that expirations will fire.
+         */
         this.ses.scheduleWithFixedDelay(
                 new Runnable() {
                     public void run() {
