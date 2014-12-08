@@ -6,23 +6,36 @@ import com.comandante.http.server.resource.BillHttpGraph;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-/*
- * Created by JFormDesigner on Sat Dec 06 23:11:27 PST 2014
- */
 
 
-
-/**
- * @author Chris Kearney
- */
 public class BillGraphCreateFrame extends JFrame {
 
     private final BillGraphManager billGraphManager;
+    private static final Logger log = LogManager.getLogger(BillGraphCreateFrame.class);
+
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel label1;
+    private JTextField graphUrl;
+    private JLabel label2;
+    private JTextField graphTitle;
+    private JTextField reloadInterval;
+    private JLabel label3;
+    private JTextField graphTimezone;
+    private JLabel label4;
+    private JLabel label5;
+    private JTextField graphDuration;
+    private JPanel buttonBar;
+    private JButton okButton;
+    private JButton cancelButton;
 
 
     public BillGraphCreateFrame(BillGraphManager billGraphManager) {
@@ -31,20 +44,37 @@ public class BillGraphCreateFrame extends JFrame {
     }
 
     private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Chris Kearney
+        setTitle("Add Graph");
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        label3 = new JLabel();
-        textField2 = new JTextField();
-        scrollPane1 = new JScrollPane();
-        editorPane1 = new JEditorPane();
         label1 = new JLabel();
-        textField1 = new JTextField();
+        String clipContents = null;
+        try {
+            String c = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+            if (c != null && c.contains("/render")) {
+                clipContents = c;
+            }
+        } catch (Exception e) {
+            log.error("Problem obtaining clipboard.", e);
+        }
+        if (clipContents != null) {
+            graphUrl = new JTextField(clipContents);
+        } else {
+            graphUrl = new JTextField();
+        }
         label2 = new JLabel();
-        textField3 = new JTextField();
+        graphTitle = new JTextField();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                graphTitle.requestFocus();
+            }
+        });
+        reloadInterval = new JTextField();
+        label3 = new JLabel();
+        graphTimezone = new JTextField();
         label4 = new JLabel();
-        textField4 = new JTextField();
+        label5 = new JLabel();
+        graphDuration = new JTextField();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
@@ -57,53 +87,47 @@ public class BillGraphCreateFrame extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(Borders.createEmptyBorder("9dlu, 9dlu, 9dlu, 9dlu"));
-
             dialogPane.setLayout(new BorderLayout());
 
             //======== contentPanel ========
             {
                 contentPanel.setLayout(new FormLayout(
-                        "39dlu, 36dlu, 53dlu, 4*(default), 13dlu, 46dlu, 74dlu",
-                        "default, $lgap, 66dlu, $lgap, default, $lgap, 23dlu, 2*($lgap, default)"));
-
-                //---- label3 ----
-                label3.setText("title");
-                contentPanel.add(label3, CC.xy(1, 1, CC.CENTER, CC.DEFAULT));
-                contentPanel.add(textField2, CC.xywh(2, 1, 9, 1));
-
-                //======== scrollPane1 ========
-                {
-
-                    //---- editorPane1 ----
-                    editorPane1.setFont(editorPane1.getFont().deriveFont(editorPane1.getFont().getSize() - 4f));
-                    editorPane1.setText("paste graphite graph here...");
-                    scrollPane1.setViewportView(editorPane1);
-                }
-                contentPanel.add(scrollPane1, CC.xywh(1, 3, 10, 3));
+                        "37dlu, $lcgap, 160dlu",
+                        "5*(default, $lgap), default"));
 
                 //---- label1 ----
-                label1.setText("timezone:");
-                contentPanel.add(label1, CC.xy(1, 7, CC.CENTER, CC.DEFAULT));
-
-                //---- textField1 ----
-                textField1.setText("America/Los_Angeles");
-                contentPanel.add(textField1, CC.xywh(2, 7, 6, 1));
+                label1.setText("graphUrl");
+                contentPanel.add(label1, CC.xy(1, 1, CC.RIGHT, CC.DEFAULT));
+                contentPanel.add(graphUrl, CC.xy(3, 1));
 
                 //---- label2 ----
-                label2.setText("duration");
-                contentPanel.add(label2, CC.xy(1, 9, CC.CENTER, CC.DEFAULT));
+                label2.setText("graphTitle");
+                contentPanel.add(label2, CC.xy(1, 3, CC.RIGHT, CC.DEFAULT));
+                contentPanel.add(graphTitle, CC.xy(3, 3));
 
-                //---- textField3 ----
-                textField3.setText("-48h");
-                contentPanel.add(textField3, CC.xy(2, 9));
+                //---- reloadInterval ----
+                reloadInterval.setText("30");
+                contentPanel.add(reloadInterval, CC.xy(3, 5));
+
+                //---- label3 ----
+                label3.setText("reload");
+                contentPanel.add(label3, CC.xy(1, 5, CC.RIGHT, CC.DEFAULT));
+
+                //---- graphTimezone ----
+                graphTimezone.setText("America/Los_Angeles");
+                contentPanel.add(graphTimezone, CC.xy(3, 7));
 
                 //---- label4 ----
-                label4.setText("reload interval");
-                contentPanel.add(label4, CC.xy(3, 9, CC.CENTER, CC.DEFAULT));
+                label4.setText("timezone");
+                contentPanel.add(label4, CC.xy(1, 7, CC.RIGHT, CC.DEFAULT));
 
-                //---- textField4 ----
-                textField4.setText("30");
-                contentPanel.add(textField4, CC.xywh(4, 9, 6, 1));
+                //---- label5 ----
+                label5.setText("duration");
+                contentPanel.add(label5, CC.xy(1, 9, CC.RIGHT, CC.DEFAULT));
+
+                //---- graphDuration ----
+                graphDuration.setText("-48h");
+                contentPanel.add(graphDuration, CC.xy(3, 9));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -127,30 +151,26 @@ public class BillGraphCreateFrame extends JFrame {
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(getOwner());
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents
         okButton.addActionListener(new OKButtonActionListener(this));
+        getRootPane().setDefaultButton(okButton);
+        cancelButton.addActionListener(new CancelButtonListener(this));
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Chris Kearney
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel label3;
-    private JTextField textField2;
-    private JScrollPane scrollPane1;
-    private JEditorPane editorPane1;
-    private JLabel label1;
-    private JTextField textField1;
-    private JLabel label2;
-    private JTextField textField3;
-    private JLabel label4;
-    private JTextField textField4;
-    private JPanel buttonBar;
-    private JButton okButton;
-    private JButton cancelButton;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-class OKButtonActionListener implements ActionListener {
+    class CancelButtonListener implements ActionListener {
+        private final BillGraphCreateFrame frame;
+
+        public CancelButtonListener(BillGraphCreateFrame frame) {
+            this.frame = frame;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            frame.dispose();
+        }
+    }
+
+    class OKButtonActionListener implements ActionListener {
         private final BillGraphCreateFrame frame;
 
         public OKButtonActionListener(BillGraphCreateFrame frame) {
@@ -162,14 +182,14 @@ class OKButtonActionListener implements ActionListener {
             BillHttpGraph httpGraph = new BillHttpGraph();
             httpGraph.setHeight(Bill.DEFAULT_HEIGHT);
             httpGraph.setWidth(Bill.DEFAULT_WIDTH);
-            httpGraph.setTitle(textField2.getText());
-            httpGraph.setGraphUrl(editorPane1.getText());
-            httpGraph.setTimezone(textField1.getText());
-            httpGraph.setRefreshRate(Integer.parseInt(textField4.getText()));
+            httpGraph.setTitle(graphTitle.getText());
+            httpGraph.setGraphUrl(graphUrl.getText());
+            httpGraph.setTimezone(graphTimezone.getText());
+            httpGraph.setRefreshRate(Integer.parseInt(reloadInterval.getText()));
+            httpGraph.setGraphDuration(graphDuration.getText());
             billGraphManager.addNewGraph(httpGraph);
             frame.setVisible(false);
             frame.dispose();
         }
     }
-
 }

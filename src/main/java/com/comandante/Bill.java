@@ -82,6 +82,7 @@ public class Bill {
         billHttpGraph.setHeight(billCommand.getHeight());
         billHttpGraph.setWidth(billCommand.getWidth());
         billHttpGraph.setTitle(billCommand.getTitle());
+        billHttpGraph.setGraphDuration(billCommand.getDuration());
         if (billCommand.getTimezone() != null) {
             billHttpGraph.setTimezone(billCommand.getTimezone());
         }
