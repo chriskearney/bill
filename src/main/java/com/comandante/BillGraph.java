@@ -28,9 +28,10 @@ public class BillGraph {
     private String title;
     private int width;
     private int height;
+    private String graphDuration;
     private final String id;
 
-    private BillGraph(String id, String graphUrl, int width, int height, String title) throws URISyntaxException, MalformedURLException {
+    private BillGraph(String id, String graphUrl, int width, int height, String title, String graphDuration) throws URISyntaxException, MalformedURLException {
         this.graphUrlPairs = parse(new URI(graphUrl), "UTF-8");
         this.url = new URL(graphUrl);
         this.protocol = url.getProtocol();
@@ -38,6 +39,7 @@ public class BillGraph {
         this.title = title;
         this.width = width;
         this.height = height;
+        this.graphDuration = graphDuration;
         this.id = id;
     }
 
@@ -48,11 +50,14 @@ public class BillGraph {
         if (billHttpGraph.getTimezone() != null) {
             injectPairs.put("tz", billHttpGraph.getTimezone());
         }
-        return createBillGraph(billHttpGraph.getGraphUrl(), injectPairs,
-                billHttpGraph.getWidth(), billHttpGraph.getHeight(), billHttpGraph.getTitle(), id);
+        if (billHttpGraph.getGraphDuration() != null) {
+            injectPairs.put("from", billHttpGraph.getGraphDuration());
+        }
+        return createBillGraph(billHttpGraph.getGraphUrl(), injectPairs, billHttpGraph.getWidth(),
+                billHttpGraph.getHeight(), billHttpGraph.getTitle(), billHttpGraph.getGraphDuration(), id);
     }
 
-    private static BillGraph createBillGraph(String graphUrl, Map<String, String> injectPairs, int width, int height, String title, Optional<String> id) {
+    private static BillGraph createBillGraph(String graphUrl, Map<String, String> injectPairs, int width, int height, String title, String graphDuration, Optional<String> id) {
         String newId;
         if (!id.isPresent()) {
             newId = UUID.randomUUID().toString();
@@ -61,7 +66,7 @@ public class BillGraph {
         }
         BillGraph billGraph = null;
         try {
-            billGraph = new BillGraph(newId, graphUrl, width, height, title);
+            billGraph = new BillGraph(newId, graphUrl, width, height, title, graphDuration);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
@@ -80,6 +85,11 @@ public class BillGraph {
         this.height = height;
         setPair("height", Integer.toString(height));
         setPair("width", Integer.toString(width));
+    }
+
+    public void updateDuration(String graphDuration) {
+        this.graphDuration = graphDuration;
+        setPair("from", graphDuration);
     }
 
     private boolean doesKeyExistInPairs(String k) {
@@ -157,6 +167,14 @@ public class BillGraph {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public String getGraphDuration() {
+        return graphDuration;
+    }
+
+    public void setGraphDuration(String graphDuration) {
+        this.graphDuration = graphDuration;
     }
 
     public String getId() {

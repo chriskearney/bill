@@ -28,6 +28,17 @@ public class BillHttpGraph implements Serializable {
     @JsonProperty
     private String title;
 
+    @JsonProperty
+    private String graphDuration;
+
+    public String getGraphDuration() {
+        return graphDuration;
+    }
+
+    public void setGraphDuration(String graphDuration) {
+        this.graphDuration = graphDuration;
+    }
+
     public String getGraphUrl() {
         return graphUrl;
     }
@@ -86,21 +97,24 @@ public class BillHttpGraph implements Serializable {
         if (height != that.height) return false;
         if (refreshRate != that.refreshRate) return false;
         if (width != that.width) return false;
-        if (!graphUrl.equals(that.graphUrl)) return false;
-        if (!timezone.equals(that.timezone)) return false;
-        if (!title.equals(that.title)) return false;
+        if (graphDuration != null ? !graphDuration.equals(that.graphDuration) : that.graphDuration != null)
+            return false;
+        if (graphUrl != null ? !graphUrl.equals(that.graphUrl) : that.graphUrl != null) return false;
+        if (timezone != null ? !timezone.equals(that.timezone) : that.timezone != null) return false;
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = graphUrl.hashCode();
+        int result = graphUrl != null ? graphUrl.hashCode() : 0;
         result = 31 * result + width;
         result = 31 * result + height;
         result = 31 * result + refreshRate;
-        result = 31 * result + timezone.hashCode();
-        result = 31 * result + title.hashCode();
+        result = 31 * result + (timezone != null ? timezone.hashCode() : 0);
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (graphDuration != null ? graphDuration.hashCode() : 0);
         return result;
     }
 
@@ -113,7 +127,7 @@ public class BillHttpGraph implements Serializable {
                 ", refreshRate=" + refreshRate +
                 ", timezone='" + timezone + '\'' +
                 ", title='" + title + '\'' +
+                ", graphDuration='" + graphDuration + '\'' +
                 '}';
     }
-
 }

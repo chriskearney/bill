@@ -28,12 +28,18 @@ public class BillCommand {
     @Parameter(names = { "-title", "-t" }, description = "Graphite graph details.")
     private String title;
 
+    @Parameter(names = { "-duration", "-d" }, description = "Graphite graph duration.")
+    private String duration;
+
     public Map<String, String> getInjectPairs() {
         Map<String, String> stringStringMap = Maps.newHashMap();
         stringStringMap.put("width", Integer.toString(width));
         stringStringMap.put("height", Integer.toString(height));
         if (timezone != null) {
             stringStringMap.put("tz", timezone);
+        }
+        if (duration != null) {
+            stringStringMap.put("from", duration);
         }
         return stringStringMap;
     }
@@ -73,4 +79,9 @@ public class BillCommand {
     public String getTitle() {
         return title;
     }
+
+    public String getDuration() {
+        return duration;
+    }
+
 }
