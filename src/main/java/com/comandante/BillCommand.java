@@ -16,7 +16,7 @@ public class BillCommand {
     @Parameter(names = { "-timezone", "-tz" }, description = "Graph display timezone.")
     private String timezone = null;
 
-    @Parameter(names = "-debug", description = "Debug mode")
+    @Parameter(names = "--debug", description = "Debug mode")
     private boolean debug = false;
 
     @Parameter(names = { "-reload", "-r" }, description = "Reload interval.")
