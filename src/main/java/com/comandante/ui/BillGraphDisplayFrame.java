@@ -1,8 +1,8 @@
 package com.comandante.ui;
 
-import com.comandante.BillGraph;
-import com.comandante.BillGraphManager;
-import com.comandante.BillResizeEvent;
+import com.comandante.graph.BillGraph;
+import com.comandante.graph.BillGraphManager;
+import com.comandante.graph.BillResizeEvent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,21 +18,23 @@ public class BillGraphDisplayFrame extends JFrame implements KeyListener {
 
     private BillGraphDisplayPanel billGraphDisplayPanel;
     private final BillGraphManager billGraphManager;
+    static GraphicsDevice device = GraphicsEnvironment
+            .getLocalGraphicsEnvironment().getScreenDevices()[0];
 
     public BillGraphDisplayFrame(InputStream is, final BillGraph billGraph, final BillGraphManager billGraphManager) throws IOException {
         this.billGraphDisplayPanel = new BillGraphDisplayPanel(ImageIO.read(is));
         this.billGraphManager = billGraphManager;
-        add(billGraphDisplayPanel);
-        setVisible(true);
-        setTitle(billGraph.getTitle());
-        getContentPane().setPreferredSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
-        addWindowListener(new java.awt.event.WindowAdapter() {
+        this.add(billGraphDisplayPanel);
+        this.setVisible(true);
+        this.setTitle(billGraph.getTitle());
+        this.getContentPane().setPreferredSize(new Dimension(billGraph.getWidth(), billGraph.getHeight()));
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 billGraphManager.removeGraph(billGraph.getId());
             }
         });
-        getRootPane().addComponentListener(new ComponentAdapter() {
+        this.getRootPane().addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 BillResizeEvent billResizeEvent = BillResizeEvent.newBuilder()
@@ -43,7 +45,7 @@ public class BillGraphDisplayFrame extends JFrame implements KeyListener {
                 billGraphManager.resizeGraph(billResizeEvent);
             }
         });
-        pack();
+        this.pack();
         com.apple.eawt.FullScreenUtilities.setWindowCanFullScreen(this, true);
         addKeyListener(this);
     }

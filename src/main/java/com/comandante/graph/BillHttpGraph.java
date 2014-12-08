@@ -1,4 +1,4 @@
-package com.comandante.http.server.resource;
+package com.comandante.graph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,10 +1,10 @@
 **bill**
 
-Bill will fetch and display graphite graphs in a window.  If you want, Bill will even reload the graph automatically for you. Bill is a pretty good guy.
+Before you can build, install the AppleJavaExtensions:
 
-**usage**
-
-java -jar bill.jar -g http://graphite_graph_url -w 800 -h 600 -r 30
-
-
-
+mvn org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file 
+-Dfile=lib/AppleJavaExtensions.jar 
+-DgroupId=com.apple 
+-DartifactId=eawt 
+-Dversion=1.6
+-Dpackaging=jar

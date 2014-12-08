@@ -1,8 +1,8 @@
 package com.comandante.ui;
 
 import com.comandante.Bill;
-import com.comandante.BillGraphManager;
-import com.comandante.http.server.resource.BillHttpGraph;
+import com.comandante.graph.BillGraphManager;
+import com.comandante.graph.BillHttpGraph;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -36,7 +36,6 @@ public class BillGraphCreateFrame extends JFrame {
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;
-
 
     public BillGraphCreateFrame(BillGraphManager billGraphManager) {
         this.billGraphManager = billGraphManager;

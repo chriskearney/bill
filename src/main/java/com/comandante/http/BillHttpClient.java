@@ -1,6 +1,6 @@
 package com.comandante.http;
 
-import com.comandante.BillGraph;
+import com.comandante.graph.BillGraph;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;

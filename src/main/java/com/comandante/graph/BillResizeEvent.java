@@ -1,4 +1,4 @@
-package com.comandante;
+package com.comandante.graph;
 
 
 public class BillResizeEvent {

@@ -1,4 +1,4 @@
-package com.comandante;
+package com.comandante.graph;
 
 import com.comandante.http.BillHttpClient;
 import com.comandante.ui.BillGraphDisplayFrame;

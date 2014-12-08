@@ -1,6 +1,6 @@
 package com.comandante;
 
-import com.comandante.http.server.resource.BillHttpGraph;
+import com.comandante.graph.BillHttpGraph;
 import com.google.gson.GsonBuilder;
 import org.mapdb.Serializer;
 

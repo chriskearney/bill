@@ -2,10 +2,11 @@ package com.comandante;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.internal.Maps;
+import com.comandante.graph.BillGraphManager;
 import com.comandante.http.BillHttpClient;
 import com.comandante.http.server.BillHttpServerApplication;
 import com.comandante.http.server.BillHttpServerConfiguration;
-import com.comandante.http.server.resource.BillHttpGraph;
+import com.comandante.graph.BillHttpGraph;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
 import io.dropwizard.cli.ServerCommand;
