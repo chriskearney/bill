@@ -37,7 +37,7 @@ public class BillGraphRefresher extends AbstractScheduledService {
         } catch (Exception e) {
             log.error("Problem loading graph from graphite with id: " + billGraph.getId(), e);
         }
-        if (is != null) {
+        if (is != null && billGraphDisplayFrame != null) {
             billGraphDisplayFrame.updateImagePanel(is, billGraph);
         }
         log.debug("Graph refresh thread completed for graph id: " + billGraph.getId());
