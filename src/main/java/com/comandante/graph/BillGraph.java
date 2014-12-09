@@ -2,6 +2,7 @@ package com.comandante.graph;
 
 import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
@@ -153,8 +154,20 @@ public class BillGraph {
         return null;
     }
 
+    public String getGraphUrlWithTitle() {
+        List<NameValuePair> pairWithTitle = ImmutableList.<NameValuePair>builder()
+                .add(new BasicNameValuePair("title", title))
+                .addAll(ImmutableList.copyOf(graphUrlPairs))
+                .build();
+        return getGraphUrl(pairWithTitle);
+    }
+
     public String getGraphUrl() {
-        return protocol + "://" + hostname + "/render/?" + URLEncodedUtils.format(graphUrlPairs, "UTF-8");
+        return getGraphUrl(graphUrlPairs);
+    }
+
+    public String getGraphUrl(List<NameValuePair> pairs) {
+        return protocol + "://" + hostname + "/render/?" + URLEncodedUtils.format(pairs, "UTF-8");
     }
 
     public int getHeight() {
