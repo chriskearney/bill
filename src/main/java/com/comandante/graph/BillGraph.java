@@ -166,6 +166,9 @@ public class BillGraph {
     }
 
     public String getTitle() {
+        if (getGraphDuration() == null) {
+            return title;
+        }
         return title + " (" + getGraphDuration() + ")";
     }
 

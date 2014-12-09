@@ -97,7 +97,7 @@ public class BillGraphDisplayFrame extends JFrame {
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            new BillGraphCreateFrame(billGraphManager).setVisible(true);
+                            new BillGraphAddFrame(billGraphManager).setVisible(true);
                         }
                     });
                 }
@@ -179,7 +179,7 @@ public class BillGraphDisplayFrame extends JFrame {
                         }
                     }
                     if (e.getKeyChar() == 'a' || e.getKeyChar() == 'A') {
-                        new BillGraphCreateFrame(billGraphManager).setVisible(true);
+                        new BillGraphAddFrame(billGraphManager).setVisible(true);
                     }
                 } else if (e.getID() == KeyEvent.KEY_RELEASED) {
                     System.out.println("2test2");
