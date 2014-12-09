@@ -24,7 +24,7 @@ public class BillGraphDisplayFrame extends JFrame {
 
     private BillGraphDisplayPanel billGraphDisplayPanel;
     private final BillGraphManager billGraphManager;
-    private final BillGraph billGraph;
+    private BillGraph billGraph;
     private final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     static GraphicsDevice device = GraphicsEnvironment
             .getLocalGraphicsEnvironment().getScreenDevices()[0];
@@ -75,10 +75,21 @@ public class BillGraphDisplayFrame extends JFrame {
         this.pack();
     }
 
+    public void updateBillGraph(BillGraph billGraph) {
+        this.billGraph = billGraph;
+    }
+
     class GraphPopUpMenu extends JPopupMenu {
         public GraphPopUpMenu() {
             add(new GraphEditMenu());
-            add(new JMenuItem("Edit Graph"));
+            JMenuItem editGraphItem = new JMenuItem("Edit Graph");
+            editGraphItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    new BillGraphEditFrame(billGraph, billGraphManager).setVisible(true);
+                }
+            });
+            add(editGraphItem);
             JMenuItem addGraphItem = new JMenuItem("Add Graph");
             addGraphItem.addActionListener(new ActionListener() {
                 @Override

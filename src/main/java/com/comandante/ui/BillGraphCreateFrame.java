@@ -178,15 +178,20 @@ public class BillGraphCreateFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            BillHttpGraph httpGraph = new BillHttpGraph();
-            httpGraph.setHeight(Bill.DEFAULT_HEIGHT);
-            httpGraph.setWidth(Bill.DEFAULT_WIDTH);
-            httpGraph.setTitle(graphTitle.getText());
-            httpGraph.setGraphUrl(graphUrl.getText());
-            httpGraph.setTimezone(graphTimezone.getText());
-            httpGraph.setRefreshRate(Integer.parseInt(reloadInterval.getText()));
-            httpGraph.setGraphDuration(graphDuration.getText());
-            billGraphManager.addNewGraph(httpGraph);
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    BillHttpGraph httpGraph = new BillHttpGraph();
+                    httpGraph.setHeight(Bill.DEFAULT_HEIGHT);
+                    httpGraph.setWidth(Bill.DEFAULT_WIDTH);
+                    httpGraph.setTitle(graphTitle.getText());
+                    httpGraph.setGraphUrl(graphUrl.getText());
+                    httpGraph.setTimezone(graphTimezone.getText());
+                    httpGraph.setRefreshRate(Integer.parseInt(reloadInterval.getText()));
+                    httpGraph.setGraphDuration(graphDuration.getText());
+                    billGraphManager.addNewGraph(httpGraph);
+                }
+            });
             frame.setVisible(false);
             frame.dispose();
         }

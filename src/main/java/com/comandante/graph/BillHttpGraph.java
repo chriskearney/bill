@@ -2,7 +2,6 @@ package com.comandante.graph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -21,9 +20,14 @@ public class BillHttpGraph implements Serializable {
     @JsonProperty
     private int refreshRate;
 
-    @NotNull
     @JsonProperty
     private String timezone;
+
+    @JsonProperty
+    private boolean useLocalTimestamp;
+
+    @JsonProperty
+    private boolean disableUnitSystem;
 
     @JsonProperty
     private String title;
@@ -87,6 +91,37 @@ public class BillHttpGraph implements Serializable {
         this.title = title;
     }
 
+    public boolean isUseLocalTimestamp() {
+        return useLocalTimestamp;
+    }
+
+    public void setUseLocalTimestamp(boolean useLocalTimestamp) {
+        this.useLocalTimestamp = useLocalTimestamp;
+    }
+
+    public boolean isDisableUnitSystem() {
+        return disableUnitSystem;
+    }
+
+    public void setDisableUnitSystem(boolean disableUnitSystem) {
+        this.disableUnitSystem = disableUnitSystem;
+    }
+
+    @Override
+    public String toString() {
+        return "BillHttpGraph{" +
+                "graphUrl='" + graphUrl + '\'' +
+                ", width=" + width +
+                ", height=" + height +
+                ", refreshRate=" + refreshRate +
+                ", timezone='" + timezone + '\'' +
+                ", useLocalTimestamp=" + useLocalTimestamp +
+                ", disableUnitSystem=" + disableUnitSystem +
+                ", title='" + title + '\'' +
+                ", graphDuration='" + graphDuration + '\'' +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,8 +129,10 @@ public class BillHttpGraph implements Serializable {
 
         BillHttpGraph that = (BillHttpGraph) o;
 
+        if (disableUnitSystem != that.disableUnitSystem) return false;
         if (height != that.height) return false;
         if (refreshRate != that.refreshRate) return false;
+        if (useLocalTimestamp != that.useLocalTimestamp) return false;
         if (width != that.width) return false;
         if (graphDuration != null ? !graphDuration.equals(that.graphDuration) : that.graphDuration != null)
             return false;
@@ -113,21 +150,10 @@ public class BillHttpGraph implements Serializable {
         result = 31 * result + height;
         result = 31 * result + refreshRate;
         result = 31 * result + (timezone != null ? timezone.hashCode() : 0);
+        result = 31 * result + (useLocalTimestamp ? 1 : 0);
+        result = 31 * result + (disableUnitSystem ? 1 : 0);
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (graphDuration != null ? graphDuration.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "BillHttpGraph{" +
-                "graphUrl='" + graphUrl + '\'' +
-                ", width=" + width +
-                ", height=" + height +
-                ", refreshRate=" + refreshRate +
-                ", timezone='" + timezone + '\'' +
-                ", title='" + title + '\'' +
-                ", graphDuration='" + graphDuration + '\'' +
-                '}';
     }
 }
