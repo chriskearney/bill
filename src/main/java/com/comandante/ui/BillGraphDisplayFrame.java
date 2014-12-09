@@ -97,7 +97,7 @@ public class BillGraphDisplayFrame extends JFrame {
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            new BillGraphAddFrame(billGraphManager).setVisible(true);
+                            new  BillGraphAddFrame(billGraphManager).setVisible(true);
                         }
                     });
                 }
@@ -110,7 +110,7 @@ public class BillGraphDisplayFrame extends JFrame {
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            StringSelection selection = new StringSelection(billGraph.getGraphUrl());
+                            StringSelection selection = new StringSelection(billGraph.getGraphUrlWithTitle());
                             clipboard.setContents(selection, selection);
                         }
                     });
