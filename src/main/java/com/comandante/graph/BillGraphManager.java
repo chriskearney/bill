@@ -1,6 +1,7 @@
 package com.comandante.graph;
 
 import com.comandante.BillHttpGraphSerializer;
+import com.comandante.ui.BillGraphDisplayFrame;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.apache.log4j.LogManager;
@@ -29,7 +30,7 @@ public class BillGraphManager {
 
     public void addNewGraph(BillHttpGraph billHttpGraph) {
         BillGraph billGraph = BillGraph.createBillGraph(billHttpGraph, Optional.<String>absent());
-        startGraph(billGraph, billHttpGraph.getRefreshRate());
+        startGraph(billGraph);
         billHttpGraphs.put(billGraph.getId(), billHttpGraph);
         log.info("Graph added : " + billGraph);
     }
@@ -38,6 +39,20 @@ public class BillGraphManager {
         refresherMap.get(id).stopAsync();
         refresherMap.remove(id);
         billHttpGraphs.remove(id);
+    }
+
+    public void replaceGraph(BillHttpGraph billHttpGraph, String id) {
+        billHttpGraphs.put(id, billHttpGraph);
+        BillGraph billGraph = BillGraph.createBillGraph(billHttpGraph, Optional.of(id));
+        BillGraphRefresher billGraphRefresher = refresherMap.get(id);
+        billGraphRefresher.stopAsync();
+        billGraphRefresher.awaitTerminated();
+        BillGraphDisplayFrame billGraphDisplayFrame = billGraphRefresher.getBillGraphDisplayFrame();
+        billGraphDisplayFrame.updateBillGraph(billGraph);
+        BillGraphRefresher newRefresher = new BillGraphRefresher(this, billGraph);
+        newRefresher.setBillGraphDisplayFrame(billGraphDisplayFrame);
+        newRefresher.startAsync();
+        refresherMap.put(id, newRefresher);
     }
 
     public void resizeGraph(BillResizeEvent event) {
@@ -60,8 +75,8 @@ public class BillGraphManager {
         }
     }
 
-    private void startGraph(BillGraph billGraph, int reload) {
-        BillGraphRefresher billGraphRefresher = new BillGraphRefresher(this, billGraph, reload);
+    private void startGraph(BillGraph billGraph) {
+        BillGraphRefresher billGraphRefresher = new BillGraphRefresher(this, billGraph);
         billGraphRefresher.startAsync();
         refresherMap.put(billGraph.getId(), billGraphRefresher);
     }
@@ -69,7 +84,7 @@ public class BillGraphManager {
     public void generateAllGraphsFromDisk() {
         for (Map.Entry<String, BillHttpGraph> next : billHttpGraphs.entrySet()) {
             if (next.getValue() != null) {
-                startGraph(BillGraph.createBillGraph(next.getValue(), Optional.of(next.getKey())), next.getValue().getRefreshRate());
+                startGraph(BillGraph.createBillGraph(next.getValue(), Optional.of(next.getKey())));
             }
         }
     }

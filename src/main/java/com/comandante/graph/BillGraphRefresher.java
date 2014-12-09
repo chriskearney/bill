@@ -12,17 +12,15 @@ import java.util.concurrent.TimeUnit;
 public class BillGraphRefresher extends AbstractScheduledService {
 
     private final BillHttpClient billHttpClient;
-    private final BillGraph billGraph;
-    private final int reload;
+    private BillGraph billGraph;
     private BillGraphDisplayFrame billGraphDisplayFrame;
     private final BillGraphManager billGraphManager;
     private static final Logger log = LogManager.getLogger(BillGraphManager.class);
 
-    public BillGraphRefresher(BillGraphManager billGraphManager, BillGraph billGraph, int reload) {
+    public BillGraphRefresher(BillGraphManager billGraphManager, BillGraph billGraph) {
         this.billGraphManager = billGraphManager;
         this.billHttpClient = new BillHttpClient();
         this.billGraph = billGraph;
-        this.reload = reload;
     }
 
     @Override
@@ -45,11 +43,18 @@ public class BillGraphRefresher extends AbstractScheduledService {
 
     @Override
     protected Scheduler scheduler() {
-        return Scheduler.newFixedDelaySchedule(0, reload, TimeUnit.SECONDS);
+        return Scheduler.newFixedDelaySchedule(0, billGraph.getReloadInterval(), TimeUnit.SECONDS);
     }
 
     public BillGraph getBillGraph() {
         return billGraph;
     }
 
+    public BillGraphDisplayFrame getBillGraphDisplayFrame() {
+        return billGraphDisplayFrame;
+    }
+
+    public void setBillGraphDisplayFrame(BillGraphDisplayFrame billGraphDisplayFrame) {
+        this.billGraphDisplayFrame = billGraphDisplayFrame;
+    }
 }

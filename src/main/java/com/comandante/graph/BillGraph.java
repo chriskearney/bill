@@ -28,9 +28,12 @@ public class BillGraph {
     private int width;
     private int height;
     private String graphDuration;
+    private boolean useLocalTimezone;
+    private boolean disableUnitSystem;
+    private int reloadInterval;
     private final String id;
 
-    private BillGraph(String id, String graphUrl, int width, int height, String title, String graphDuration) throws URISyntaxException, MalformedURLException {
+    private BillGraph(String id, String graphUrl, int width, int height, String title, String graphDuration, boolean useLocalTimezone, boolean disableUnitSystem, int reloadInterval) throws URISyntaxException, MalformedURLException {
         this.graphUrlPairs = parse(new URI(graphUrl), "UTF-8");
         this.url = new URL(graphUrl);
         this.protocol = url.getProtocol();
@@ -39,6 +42,9 @@ public class BillGraph {
         this.width = width;
         this.height = height;
         this.graphDuration = graphDuration;
+        this.useLocalTimezone = useLocalTimezone;
+        this.disableUnitSystem = disableUnitSystem;
+        this.reloadInterval = reloadInterval;
         this.id = id;
     }
 
@@ -53,10 +59,13 @@ public class BillGraph {
             injectPairs.put("from", billHttpGraph.getGraphDuration());
         }
         return createBillGraph(billHttpGraph.getGraphUrl(), injectPairs, billHttpGraph.getWidth(),
-                billHttpGraph.getHeight(), billHttpGraph.getTitle(), billHttpGraph.getGraphDuration(), id);
+                billHttpGraph.getHeight(), billHttpGraph.getTitle(), billHttpGraph.getGraphDuration(),
+                billHttpGraph.isUseLocalTimestamp(), billHttpGraph.isDisableUnitSystem(), billHttpGraph.getRefreshRate(), id);
     }
 
-    private static BillGraph createBillGraph(String graphUrl, Map<String, String> injectPairs, int width, int height, String title, String graphDuration, Optional<String> id) {
+    private static BillGraph createBillGraph(String graphUrl, Map<String, String> injectPairs,
+                                             int width, int height, String title, String graphDuration,
+                                             boolean useLocalTimezone, boolean disableUnitSystem, int reloadInterval, Optional<String> id) {
         String newId;
         if (!id.isPresent()) {
             newId = UUID.randomUUID().toString();
@@ -65,7 +74,7 @@ public class BillGraph {
         }
         BillGraph billGraph = null;
         try {
-            billGraph = new BillGraph(newId, graphUrl, width, height, title, graphDuration);
+            billGraph = new BillGraph(newId, graphUrl, width, height, title, graphDuration, useLocalTimezone, disableUnitSystem, reloadInterval);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
@@ -160,11 +169,28 @@ public class BillGraph {
         return title + " (" + getGraphDuration() + ")";
     }
 
+    public String getRawTitle() {
+        return title;
+    }
+
+
     public String getGraphDuration() {
         return graphDuration;
     }
 
     public String getId() {
         return id;
+    }
+
+    public boolean isUseLocalTimezone() {
+        return useLocalTimezone;
+    }
+
+    public boolean isDisableUnitSystem() {
+        return disableUnitSystem;
+    }
+
+    public int getReloadInterval() {
+        return reloadInterval;
     }
 }
