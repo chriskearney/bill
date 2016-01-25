@@ -84,7 +84,6 @@ public class BillGraphDisplayFrame extends JFrame {
             add(new GraphEditMenu());
             JMenuItem editGraphItem = new JMenuItem("Edit Graph");
             editGraphItem.addActionListener(new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     new BillGraphEditFrame(billGraph, billGraphManager).setVisible(true);
                 }
@@ -92,10 +91,8 @@ public class BillGraphDisplayFrame extends JFrame {
             add(editGraphItem);
             JMenuItem addGraphItem = new JMenuItem("Add Graph");
             addGraphItem.addActionListener(new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     EventQueue.invokeLater(new Runnable() {
-                        @Override
                         public void run() {
                             new  BillGraphAddFrame(billGraphManager).setVisible(true);
                         }
@@ -105,10 +102,8 @@ public class BillGraphDisplayFrame extends JFrame {
             add(addGraphItem);
             JMenuItem copyGraphUrl = new JMenuItem("Copy Graph Url");
             copyGraphUrl.addActionListener(new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     EventQueue.invokeLater(new Runnable() {
-                        @Override
                         public void run() {
                             StringSelection selection = new StringSelection(billGraph.getGraphUrlWithTitle());
                             clipboard.setContents(selection, selection);
@@ -145,11 +140,9 @@ public class BillGraphDisplayFrame extends JFrame {
             for (String duration : validDurations) {
                 final JMenuItem jMenuItem = new JMenuItem(duration);
                 jMenuItem.addActionListener(new ActionListener() {
-                    @Override
                     public void actionPerformed(ActionEvent e) {
                         final String duration = jMenuItem.getText();
                         EventQueue.invokeLater(new Runnable() {
-                            @Override
                             public void run() {
                                 billGraphManager.updateGraphDuration(billGraph.getId(), duration);
                             }
@@ -169,7 +162,6 @@ public class BillGraphDisplayFrame extends JFrame {
             this.graphDisplayFrame = graphDisplayFrame;
         }
 
-        @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
             if (graphDisplayFrame.hasFocus()) {
                 if (e.getID() == KeyEvent.KEY_PRESSED) {

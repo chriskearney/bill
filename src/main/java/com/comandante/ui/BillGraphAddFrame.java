@@ -137,7 +137,6 @@ public class BillGraphAddFrame extends JFrame {
             this.frame = frame;
         }
 
-        @Override
         public void actionPerformed(ActionEvent e) {
             frame.dispose();
         }
@@ -150,10 +149,8 @@ public class BillGraphAddFrame extends JFrame {
             this.frame = frame;
         }
 
-        @Override
         public void actionPerformed(ActionEvent e) {
             EventQueue.invokeLater(new Runnable() {
-                @Override
                 public void run() {
                     BillHttpGraph httpGraph = new BillHttpGraph();
                     httpGraph.setHeight(Bill.DEFAULT_HEIGHT);

@@ -163,10 +163,8 @@ public class BillGraphEditFrame extends JFrame {
                 this.frame = frame;
             }
 
-            @Override
             public void actionPerformed(ActionEvent e) {
                 EventQueue.invokeLater(new Runnable() {
-                    @Override
                     public void run() {
                         BillHttpGraph httpGraph = new BillHttpGraph();
                         httpGraph.setHeight(Integer.parseInt(graphHeightField.getText()));
